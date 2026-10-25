@@ -1,0 +1,88 @@
+/* ================= How we work ================= */
+.hww {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: clamp(100px, 12vw, 170px) var(--gutter) clamp(110px, 12vw, 170px);
+  background: radial-gradient(70% 50% at 50% 55%, rgba(255, 255, 255, 0.05), transparent 70%), #000;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.hw-dots { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+
+.hww-head { max-width: 760px; margin: 0 auto clamp(64px, 7vw, 96px); text-align: center; }
+.hww-eyebrow { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 20px; font-size: 15px; font-weight: 500; color: rgba(255, 255, 255, 0.7); }
+.hww-eyebrow i { width: 8px; height: 8px; border-radius: 2px; background: #fff; box-shadow: 0 0 10px rgba(255, 255, 255, 0.8); }
+.hww-head h2 { font-size: clamp(38px, 4.4vw, 64px); font-weight: 600; line-height: 1.08; letter-spacing: -0.04em; color: #fff; text-shadow: 0 0 28px rgba(255, 255, 255, 0.25); margin-bottom: 18px; }
+.hww-head p { font-size: clamp(16px, 1.25vw, 19px); line-height: 1.6; color: rgba(255, 255, 255, 0.6); }
+
+/* Row of glass step cards */
+.hw-row { position: relative; display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; max-width: 1440px; margin: 0 auto; }
+.hw-row-line { position: absolute; left: 7%; right: 7%; top: 0; height: 1px; background: linear-gradient(90deg, transparent, #fff 15%, #fff 85%, transparent); box-shadow: 0 0 12px rgba(255, 255, 255, 0.5); transform-origin: 0 50%; }
+
+.hw-glass {
+  --mx: 50%; --my: 0%;
+  position: relative;
+  display: flex; flex-direction: column;
+  margin-top: 34px;
+  padding: 0 26px 30px;
+  min-height: 480px;
+  border-radius: 24px;
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.01) 45%, rgba(255, 255, 255, 0.03)),
+    rgba(14, 14, 16, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.04),
+    0 30px 60px -30px rgba(0, 0, 0, 0.9);
+  transition: transform 0.5s var(--ease), border-color 0.5s var(--ease);
+}
+/* Pointer-follow sheen on the glass and a lit edge */
+.hw-glass::before {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(320px circle at var(--mx) var(--my), rgba(255, 255, 255, 0.1), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s var(--ease);
+  pointer-events: none;
+}
+.hw-glass::after {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: radial-gradient(240px circle at var(--mx) var(--my), rgba(255, 255, 255, 0.7), transparent 60%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s var(--ease);
+  pointer-events: none;
+}
+.hw-glass:hover { transform: translateY(-6px); border-color: rgba(255, 255, 255, 0.2); }
+.hw-glass:hover::before, .hw-glass:hover::after { opacity: 1; }
+
+.hw-row-node { position: absolute; left: 50%; top: -41px; width: 13px; height: 13px; margin-left: -6.5px; border-radius: 50%; background: #000; border: 2px solid #fff; box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.06), 0 0 14px rgba(255, 255, 255, 0.6); }
+.hw-row-obj { position: relative; height: 230px; margin: 0 -26px 8px; }
+.hw-row-meta { display: flex; justify-content: space-between; margin-bottom: 12px; font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255, 255, 255, 0.55); }
+.hw-row-meta b { font-weight: 400; color: rgba(255, 255, 255, 0.35); }
+.hw-glass h3 { font-size: 24px; font-weight: 600; letter-spacing: -0.025em; color: #fff; margin-bottom: 12px; }
+.hw-glass p { font-size: 14.5px; line-height: 1.6; color: rgba(255, 255, 255, 0.62); margin-bottom: 20px; }
+.hw-out { list-style: none; display: grid; gap: 8px; margin-top: auto; }
+.hw-out li { display: flex; align-items: center; gap: 9px; font-size: 13px; color: rgba(255, 255, 255, 0.85); }
+.hw-out li::before { content: ''; width: 5px; height: 5px; border-radius: 1px; background: #fff; flex-shrink: 0; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1199px) {
+  .hw-row { grid-template-columns: repeat(3, 1fr); row-gap: 24px; }
+  .hw-row-line, .hw-row-node { display: none; }
+  .hw-glass { margin-top: 0; min-height: 0; }
+}
+@media (max-width: 767px) {
+  .hw-row { grid-template-columns: 1fr; }
+  .hw-row-obj { height: 200px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hw-glass { transition: none; }
+}

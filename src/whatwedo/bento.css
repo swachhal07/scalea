@@ -1,0 +1,79 @@
+/* ---------- Bento grid ---------- */
+.wwd-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  max-width: 1240px;
+  margin: 0 auto;
+  text-align: left;
+}
+.wwd-grid .wwd-build { grid-column: span 2; }
+
+.wwd-card {
+  --mx: 50%; --my: 0%;
+  position: relative;
+  display: flex; flex-direction: column;
+  border-radius: 22px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #0f0f10, #070708);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: transform 0.5s var(--ease);
+}
+.wwd-card::after {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: radial-gradient(260px circle at var(--mx) var(--my), rgba(255, 255, 255, 0.55), transparent 60%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s var(--ease);
+  pointer-events: none;
+}
+.wwd-card:hover::after { opacity: 1; }
+.wwd-card:hover { transform: translateY(-2px); }
+
+.wwd-visual {
+  position: relative;
+  height: 260px;
+  overflow: hidden;
+  background: radial-gradient(60% 80% at 50% 0%, rgba(255, 255, 255, 0.07), transparent 70%);
+}
+.wwd-grid .wwd-build .wwd-visual { height: 300px; }
+
+/* ---------- 3D objects ---------- */
+.obj3d { position: absolute; inset: 0; }
+.obj3d canvas { display: block; width: 100%; height: 100%; }
+.wwd-visual:has(.obj3d)::after {
+  content: '';
+  position: absolute; left: 50%; bottom: 14px;
+  width: 46%; height: 26px; margin-left: -23%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.1), transparent);
+  pointer-events: none;
+}
+
+.wwd-body { padding: 8px 32px 34px; display: flex; flex-direction: column; flex: 1; }
+.wwd-k { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 12px; font-family: var(--mono); font-size: 12px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: #fff; }
+.wwd-k b { font-weight: 400; color: rgba(255, 255, 255, 0.4); }
+.wwd-body h3 { font-size: 24px; font-weight: 600; letter-spacing: -0.025em; line-height: 1.2; color: #fff; margin-bottom: 10px; }
+.wwd-body p { font-size: 15px; line-height: 1.6; color: rgba(255, 255, 255, 0.55); max-width: 34em; }
+.wwd-body ul { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; }
+.wwd-body li { padding: 6px 12px; border-radius: 999px; font-size: 13px; color: rgba(255, 255, 255, 0.75); background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08); }
+
+@media (max-width: 1023px) {
+  .wwd-grid { grid-template-columns: repeat(2, 1fr); }
+  .wwd-grid .wwd-build, .wwd-grid .wwd-ai { grid-column: span 2; }
+}
+@media (max-width: 639px) {
+  .wwd-grid { grid-template-columns: 1fr; }
+  .wwd-grid .wwd-build, .wwd-grid .wwd-ai { grid-column: auto; }
+  .wwd-visual, .wwd-grid .wwd-build .wwd-visual { height: 210px; }
+  .wwd-body { padding: 4px 22px 24px; }
+  .wwd-body h3 { font-size: 21px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wwd-card { transition: none; }
+}
