@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { EASE } from '../lib.js';
+import { EASE, titleReveal } from '../lib.js';
 import Bars from '../components/Bars.jsx';
 import { Field, Group, isEmail } from './Field.jsx';
 import { SITE, whatsappHref } from '../site.jsx';
@@ -91,7 +91,7 @@ export default function StartProject() {
       <motion.div className="sp-grid" initial="hidden" animate="show">
         <aside className="sp-aside">
           <motion.span className="sp-eyebrow" variants={reveal}><i />Start a project</motion.span>
-          <motion.h1 variants={reveal} custom={1}>{COPY.title}</motion.h1>
+          <motion.h1 variants={titleReveal} custom={1}>{COPY.title}</motion.h1>
           <motion.p className="sp-lede" variants={reveal} custom={2}>
             {COPY.lede}
           </motion.p>

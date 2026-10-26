@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { EASE } from '../lib.js';
+import { EASE, titleReveal } from '../lib.js';
 import { SITE } from '../site.jsx';
 
 // Privacy policy and terms of use, sharing one long-form reading layout.
@@ -106,7 +106,7 @@ function LegalPage({ eyebrow, title, lede, sections }) {
       <motion.div className="lg-wrap" initial="hidden" animate="show">
         <header className="lg-head">
           <motion.span className="sp-eyebrow" variants={reveal}><i />{eyebrow}</motion.span>
-          <motion.h1 variants={reveal} custom={1}>{title}</motion.h1>
+          <motion.h1 variants={titleReveal} custom={1}>{title}</motion.h1>
           <motion.p className="lg-lede" variants={reveal} custom={2}>{lede}</motion.p>
           <motion.span className="lg-date" variants={reveal} custom={3}>Last updated {UPDATED}</motion.span>
         </header>

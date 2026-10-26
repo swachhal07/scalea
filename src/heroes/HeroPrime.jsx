@@ -23,14 +23,14 @@ const CARDS = [
 // Client logos (white versions made by scripts/mono-logos.ps1), each fitted into the same box.
 // No logo file → typeset wordmark in that box.
 export const BRANDS = [
-  { id: 'mahindra', main: 'Mahindra', logo: '/brands/mahindra.png' },
-  { id: 'revolt', main: 'Revolt', logo: '/brands/revolt.png' },
-  { id: 'deere', main: 'John Deere', logo: '/brands/john-deere.png' },
-  { id: 'kaifeng', main: 'Kaifeng', logo: '/brands/kaifeng.png' },
+  { id: 'mahindra', main: 'Mahindra', logo: '/brands/mahindra.webp' },
+  { id: 'revolt', main: 'Revolt', logo: '/brands/revolt.webp' },
+  { id: 'deere', main: 'John Deere', logo: '/brands/john-deere.webp' },
+  { id: 'kaifeng', main: 'Kaifeng', logo: '/brands/kaifeng.webp' },
   { id: 'tata', main: 'Tata Hitachi' },
-  { id: 'bkt', main: 'BKT Tyres', logo: '/brands/bkt.png' },
-  { id: 'dugar', main: 'MV Dugar Group', logo: '/brands/mv-dugar.png' },
-  { id: 'manokamana', main: 'Manokamana Hire Purchase', logo: '/brands/manokamana.png' },
+  { id: 'bkt', main: 'BKT Tyres', logo: '/brands/bkt.webp' },
+  { id: 'dugar', main: 'MV Dugar Group', logo: '/brands/mv-dugar.webp' },
+  { id: 'manokamana', main: 'Manokamana Hire Purchase', logo: '/brands/manokamana.webp' },
 ];
 
 // Hero copy, shared with the markdown version of the page (src/md/registry.jsx).
@@ -127,8 +127,8 @@ export default function HeroPrime() {
         <motion.p className="p-lede" {...rise(0.32)}>
           {HERO.lede}
         </motion.p>
-        <motion.a href="/start" className="p-cta" aria-label="Start scaling" {...rise(0.44)}>
-          <Bars /><span className="p-cta-label" aria-hidden="true">Start <CycleWord words={CYCLE} /></span>
+        <motion.a href="/start" className="p-cta" {...rise(0.44)}>
+          <Bars /><span className="sr-only">Start a project</span><span className="p-cta-label" aria-hidden="true">Start <CycleWord words={CYCLE} /></span>
         </motion.a>
         <motion.a href="#services" className="p-note" {...rise(0.54)}>
           <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" /><path d="M8 7.2v3.6M8 5.2v.1" /></svg>
@@ -144,7 +144,7 @@ export default function HeroPrime() {
               {BRANDS.map((b) => (
                 <li key={b.id} className={`bw bw-${b.id}`}>
                   {b.logo
-                    ? <img src={b.logo} alt={dup === 0 ? b.main : ''} loading="lazy" decoding="async" />
+                    ? <img src={b.logo} alt={dup === 0 ? b.main : ''} width="140" height="44" loading="lazy" decoding="async" />
                     : <span>{b.main}</span>}
                 </li>
               ))}

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { EASE } from '../lib.js';
+import { EASE, titleReveal } from '../lib.js';
 import Bars from '../components/Bars.jsx';
 import CycleWord from '../components/CycleWord.jsx';
 import { SITE } from '../site.jsx';
@@ -115,7 +115,7 @@ export default function Careers() {
       <motion.div className="lg-wrap" initial="hidden" animate="show">
         <header className="lg-head cr-head">
           <motion.span className="sp-eyebrow" variants={reveal}><i />Careers</motion.span>
-          <motion.h1 variants={reveal} custom={1} aria-label={COPY.title}>
+          <motion.h1 variants={titleReveal} custom={1} aria-label={COPY.title}>
             <span aria-hidden="true"><CycleWord words={VERBS} /> what’s next with us.</span>
           </motion.h1>
           <motion.p className="lg-lede" variants={reveal} custom={2}>

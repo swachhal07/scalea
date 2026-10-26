@@ -1,5 +1,9 @@
 import { motion } from 'framer-motion';
 import { SERVICES, reveal } from './data.jsx';
+import { SERVICES as PAGES, servicePath } from '../services.js';
+
+// Each card's title links to its service page.
+const pageFor = (id) => PAGES.find((p) => p.card === id);
 
 // Light follows the pointer along each card's border.
 function track(e) {
@@ -26,7 +30,7 @@ export default function Bento() {
           <div className="wwd-visual" aria-hidden="true">{s.visual}</div>
           <div className="wwd-body">
             <span className="wwd-k"><b>0{i + 1}</b>{s.k}</span>
-            <h3>{s.title}</h3>
+            <h3>{pageFor(s.id) ? <a href={servicePath(pageFor(s.id))}>{s.title}</a> : s.title}</h3>
             <p>{s.copy}</p>
           </div>
         </motion.article>

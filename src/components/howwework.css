@@ -66,7 +66,7 @@
 .hw-row-node { position: absolute; left: 50%; top: -41px; width: 13px; height: 13px; margin-left: -6.5px; border-radius: 50%; background: #000; border: 2px solid #fff; box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.06), 0 0 14px rgba(255, 255, 255, 0.6); }
 .hw-row-obj { position: relative; height: 230px; margin: 0 -26px 8px; }
 .hw-row-meta { display: flex; justify-content: space-between; margin-bottom: 12px; font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255, 255, 255, 0.55); }
-.hw-row-meta b { font-weight: 400; color: rgba(255, 255, 255, 0.35); }
+.hw-row-meta b { font-weight: 400; color: rgba(255, 255, 255, 0.55); }
 .hw-glass h3 { font-size: 24px; font-weight: 600; letter-spacing: -0.025em; color: #fff; margin-bottom: 12px; }
 .hw-glass p { font-size: 14.5px; line-height: 1.6; color: rgba(255, 255, 255, 0.62); margin-bottom: 20px; }
 .hw-out { list-style: none; display: grid; gap: 8px; margin-top: auto; }

@@ -4,6 +4,8 @@
 // between pages. Change ORIGIN here once the custom domain is live. Plain data only: the
 // Vercel middleware imports this file too.
 
+import { SERVICES, servicePath } from './services.js';
+
 export const ORIGIN = 'https://scalea.vercel.app';
 
 // Who we are, for llms.txt, ai.txt and the Organization JSON-LD.
@@ -18,7 +20,8 @@ export const ABOUT = {
 };
 
 // Every public page. `summary` feeds <meta name="ai-summary">: what the page is, for a
-// model that has already fetched it. `group` orders llms.txt and llms-full.txt.
+// model that has already fetched it. `group` orders llms.txt and llms-full.txt. Service pages
+// come from src/services.js.
 export const PAGES = {
   '/': {
     title: 'Scalea — Web Development, SEO & Digital Growth Agency in Nepal',
@@ -43,6 +46,9 @@ export const PAGES = {
     summary: 'Careers page: what working at Scalea is like, current openings (none right now) and how to send a CV.',
     group: 'core',
   },
+  ...Object.fromEntries(
+    SERVICES.map((s) => [servicePath(s), { title: s.title, description: s.description, summary: s.summary, group: 'services' }])
+  ),
   '/privacy': {
     title: 'Privacy Policy — Scalea',
     description: 'What Scalea collects when you contact us or use this site, how we use it, and the choices you have.',

@@ -16,6 +16,8 @@ import { COPY as CLOSING_COPY } from '../components/Closing.jsx';
 import { COPY as START_COPY, STEPS as START_STEPS, SERVICES as START_SERVICES, BUDGETS, TIMELINES } from '../pages/StartProject.jsx';
 import { COPY as CAREERS_COPY, PERKS } from '../pages/Careers.jsx';
 import { UPDATED, PRIVACY, PRIVACY_HEAD, TERMS, TERMS_HEAD } from '../pages/Legal.jsx';
+import { SERVICES as SERVICE_PAGES, servicePath } from '../services.js';
+import { workFor } from '../pages/ServicePage.jsx';
 import { esc, h, link, list, ordered, table, inline, page } from './format.js';
 
 // Pages are static, so their content changes only when the site is rebuilt.
@@ -35,7 +37,11 @@ const home = () => [
   [
     h(2, 'What we do'),
     `${esc(SERVICES_COPY.heading)} ${esc(SERVICES_COPY.intro)}`,
-    ...SERVICES.map((s, i) => `${h(3, `${i + 1}. ${s.k}: ${s.title}`)}\n\n${esc(s.copy)}`),
+    ...SERVICES.map((s, i) => {
+      const p = SERVICE_PAGES.find((x) => x.card === s.id);
+      const more = p ? ` ${link(`More about ${p.name}`, servicePath(p))}.` : '';
+      return `${h(3, `${i + 1}. ${s.k}: ${s.title}`)}\n\n${esc(s.copy)}${more}`;
+    }),
     `${esc(SERVICES_COPY.cta)} ${link('Start a project', '/start')}.`,
   ].join('\n\n'),
   [
@@ -86,6 +92,23 @@ const careers = () => [
   `${h(2, CAREERS_COPY.apply)}\n\n${esc(CAREERS_COPY.applyCopy)} Apply with the ${link('form on this page', '/careers#apply')} or email ${link(SITE.email, `mailto:${SITE.email}`)}.`,
 ];
 
+const service = (s) => () => {
+  const work = workFor(s);
+  return [
+    `**${esc(s.h1)}**\n\n${esc(s.lede)}`,
+    `${h(2, 'What’s included')}\n\n${list(s.includes.map(([t, d]) => `**${esc(t)}**: ${esc(d)}`))}`,
+    `${h(2, 'Who it’s for')}\n\n${list(s.fit.map(esc))}`,
+    `${h(2, 'How we work')}\n\n${ordered(PROCESS.map((st) => `**${esc(st.k)}** (${esc(st.time)}): ${esc(st.copy)}`))}`,
+    work.length
+      ? `${h(2, 'Related work')}\n\n${table(['Client', 'Industry', 'Website'], work.map((c) => [esc(c.client), esc(c.industry), link(new URL(c.url).hostname, c.url)]))}`
+      : '',
+    `${h(2, 'Common questions')}\n\n${s.faq.map(([q, a]) => `${h(3, q)}\n\n${esc(a)}`).join('\n\n')}`,
+    `${h(2, 'Get started')}\n\n${link('Start a project', '/start')} or contact us:\n\n${contact()}`,
+  ];
+};
+
+const cap = (t) => t[0].toUpperCase() + t.slice(1);
+
 const legal = (head, sections) => () => [
   esc(head.lede),
   ...sections.map((s, i) => `${h(2, `${i + 1}. ${s.h}`)}\n\n${s.p.map(inline).join('\n\n')}`),
@@ -93,16 +116,22 @@ const legal = (head, sections) => () => [
 
 // Route → how to write it. `updated` is when the content last changed, where we know it.
 const RENDERERS = {
-  '/': { body: home, related: [['Start a project', '/start'], ['Careers', '/careers'], ['Privacy policy', '/privacy'], ['Terms of use', '/terms']] },
+  '/': { body: home, related: [...SERVICE_PAGES.map((s) => [cap(s.name), servicePath(s)]), ['Start a project', '/start'], ['Careers', '/careers'], ['Privacy policy', '/privacy'], ['Terms of use', '/terms']] },
   '/start': { body: start, related: [['Home', '/'], ['Selected work', '/#work'], ['Privacy policy', '/privacy']] },
   '/careers': { body: careers, related: [['Home', '/'], ['About Scalea', '/#about'], ['Privacy policy', '/privacy']] },
+  ...Object.fromEntries(
+    SERVICE_PAGES.map((s) => [
+      servicePath(s),
+      { body: service(s), related: SERVICE_PAGES.filter((x) => x !== s).map((x) => [cap(x.name), servicePath(x)]) },
+    ])
+  ),
   '/privacy': { body: legal(PRIVACY_HEAD, PRIVACY), updated: UPDATED, related: [['Terms of use', '/terms'], ['Home', '/']] },
   '/terms': { body: legal(TERMS_HEAD, TERMS), updated: UPDATED, related: [['Privacy policy', '/privacy'], ['Home', '/']] },
 };
 
-// Every addressable markdown route, in llms.txt order: core pages first, then legal.
+// Every addressable markdown route, in llms.txt order: core pages, services, then legal.
 export function listMarkdownRoutes() {
-  const order = ['core', 'legal'];
+  const order = ['core', 'services', 'legal'];
   return Object.entries(PAGES)
     .filter(([path]) => RENDERERS[path])
     .sort(([, a], [, b]) => order.indexOf(a.group) - order.indexOf(b.group))

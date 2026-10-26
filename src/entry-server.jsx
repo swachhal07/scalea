@@ -5,7 +5,7 @@ import App, { PAGES as APP_ROUTES } from './App.jsx';
 import { setServerPath } from './router.jsx';
 
 export { listMarkdownRoutes, renderMarkdown, hasRenderer } from './md/registry.jsx';
-export { robotsTxt, llmsTxt, llmsFullTxt, aiTxt, catalog, organizationJsonLd } from './md/site-files.js';
+export { robotsTxt, llmsTxt, llmsFullTxt, aiTxt, catalog, organizationJsonLd, serviceJsonLd } from './md/site-files.js';
 
 // Every route the app serves, for the build's markdown coverage check.
 export const appRoutes = ['/', ...Object.keys(APP_ROUTES)];

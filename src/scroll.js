@@ -17,6 +17,21 @@ export function setLenis(instance) {
 
 export const getLenis = () => lenis;
 
+// Jump straight to an element, or to the top of the page. With smooth scrolling on, Lenis
+// keeps its own scroll position (and may still be gliding from the last wheel turn), so it
+// has to jump too; moving only the window lets Lenis pull the page back to where it was.
+export function jumpTo(target) {
+  if (lenis) lenis.scrollTo(target || 0, { immediate: true, force: true });
+  if (target) target.scrollIntoView();
+  else window.scrollTo(0, 0);
+}
+
+// Scroll smoothly to an element on the current page.
+export function glideTo(target) {
+  if (lenis) lenis.scrollTo(target);
+  else target.scrollIntoView({ behavior: 'smooth' });
+}
+
 // Pause or resume page scrolling (the mobile menu holds the page still while open).
 export function lockScroll(locked) {
   if (lenis) {

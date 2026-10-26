@@ -71,7 +71,7 @@
 .ab-nums { grid-area: nums; }
 .ab-path { grid-area: path; }
 
-/* Kathmandu: live time beside a radar ping */
+/* Kathmandu: live time beside a globe reaching out to other cities */
 .ab-ktm { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr); min-height: 340px; }
 .ab-ktm-text { display: flex; flex-direction: column; gap: 18px; padding: 34px; }
 .ab-clock b { display: block; font-size: clamp(44px, 4.4vw, 64px); font-weight: 600; line-height: 1; letter-spacing: -0.05em; color: #fff; font-variant-numeric: tabular-nums; }
@@ -88,42 +88,13 @@
 .ab-live.is-open i { background: #fff; box-shadow: 0 0 10px #fff; animation: ab-blink 2s ease-in-out infinite; }
 @keyframes ab-blink { 50% { opacity: 0.35; } }
 
-.ab-radar {
+.ab-globe {
   position: relative;
+  min-height: 340px;
   border-left: 1px solid rgba(255, 255, 255, 0.06);
-  background:
-    radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1.3px) 0 0 / 18px 18px,
-    radial-gradient(closest-side, rgba(255, 255, 255, 0.06), transparent);
-  overflow: hidden;
+  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.05), transparent);
 }
-.ab-ring, .ab-sweep, .ab-ping, .ab-pin { position: absolute; left: 50%; top: 50%; border-radius: 50%; translate: -50% -50%; }
-.ab-ring { border: 1px solid rgba(255, 255, 255, 0.1); }
-/* Radar sized from one value, so it can shrink to fit a phone */
-.ab-radar { --r: 270px; }
-.ab-ring.r1 { width: calc(var(--r) / 3); height: calc(var(--r) / 3); }
-.ab-ring.r2 { width: calc(var(--r) * 2 / 3); height: calc(var(--r) * 2 / 3); }
-.ab-ring.r3 { width: var(--r); height: var(--r); border-style: dashed; }
-.ab-sweep {
-  width: var(--r); height: var(--r);
-  background: conic-gradient(from 0deg, rgba(255, 255, 255, 0.18), transparent 22%);
-  mask-image: radial-gradient(closest-side, #000 99%, transparent);
-  -webkit-mask-image: radial-gradient(closest-side, #000 99%, transparent);
-  animation: ab-spin 6s linear infinite;
-}
-@keyframes ab-spin { to { transform: rotate(360deg); } }
-.ab-ping { width: 14px; height: 14px; border: 1px solid #fff; animation: ab-ping 2.6s cubic-bezier(0.2, 0.6, 0.4, 1) infinite; }
-.ab-ping.p2 { animation-delay: 1.3s; }
-@keyframes ab-ping { from { transform: scale(1); opacity: 0.9; } to { transform: scale(9); opacity: 0; } }
-.ab-pin { width: 12px; height: 12px; background: #fff; box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.12), 0 0 22px #fff; }
-.ab-pin-label {
-  position: absolute; left: 50%; top: calc(50% + 18px); translate: -50% 0;
-  padding: 4px 10px; border-radius: 999px; background: rgba(0, 0, 0, 0.7); border: 1px solid rgba(255, 255, 255, 0.14);
-  font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #fff; white-space: nowrap;
-}
-.ab-dot { position: absolute; width: 5px; height: 5px; border-radius: 50%; background: rgba(255, 255, 255, 0.55); box-shadow: 0 0 8px rgba(255, 255, 255, 0.6); animation: ab-blink 3s ease-in-out infinite; }
-.ab-dot:nth-of-type(2) { animation-delay: 0.8s; }
-.ab-dot:nth-of-type(3) { animation-delay: 1.6s; }
-.ab-dot:nth-of-type(4) { animation-delay: 2.2s; }
+.ab-globe canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 
 /* Numbers */
 .ab-nums { display: flex; flex-direction: column; padding: 34px; }
@@ -176,13 +147,13 @@
 }
 @media (max-width: 639px) {
   .ab-ktm { grid-template-columns: 1fr; }
-  .ab-radar { --r: 180px; order: -1; height: 220px; border-left: 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
+  .ab-globe { min-height: 300px; order: -1; border-left: 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
   .ab-ktm-text, .ab-nums, .ab-path { padding: 24px; }
   .ab-nums li { grid-template-columns: 88px minmax(0, 1fr); }
   .ab-path { grid-template-columns: 1fr; gap: 30px; }
   .ab-values li { padding: 24px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .ab-sweep, .ab-ping, .ab-dot, .ab-line-track i, .ab-stage i, .ab-live i { animation: none !important; }
+  .ab-line-track i, .ab-stage i, .ab-live i { animation: none !important; }
   .ab-say span { transition: none; }
 }

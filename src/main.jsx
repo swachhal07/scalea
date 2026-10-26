@@ -13,6 +13,11 @@ import './components/about.css';
 import './components/closing.css';
 import './pages/start.css';
 import './pages/legal.css';
+import './pages/services.css';
+
+// Where a page opens is the app's call (useScrollOnRoute in App.jsx), so the browser
+// doesn't restore an old scroll position on reload or back and forward.
+if ('scrollRestoration' in window.history) window.history.scrollRestoration = 'manual';
 
 // The intro in index.html plays first. The site renders once the particles have formed
 // the logo, so its entrance animations play in view; the intro fades out after that paint.

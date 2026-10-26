@@ -6,7 +6,7 @@
 
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
-import { resolve } from 'node:path';
+import { dirname, resolve } from 'node:path';
 
 const dist = resolve('dist');
 const ssr = resolve('dist-ssr');
@@ -53,7 +53,8 @@ const template = readFileSync(resolve(dist, 'index.html'), 'utf8');
 
 for (const path of Object.keys(PAGES)) {
   const file = path === '/' ? 'index.html' : `${path.slice(1)}.html`;
-  const jsonLd = path === '/' ? app.organizationJsonLd() : null;
+  const jsonLd = path === '/' ? app.organizationJsonLd() : app.serviceJsonLd(path);
+  mkdirSync(dirname(resolve(dist, file)), { recursive: true });
   writeFileSync(resolve(dist, file), page(template, path, PAGES[path], await app.render(path), { jsonLd }));
   console.log(`prerendered ${path} -> ${file}`);
 }
@@ -65,6 +66,7 @@ console.log('prerendered 404.html');
 // Accept: text/markdown, with the right headers.
 mkdirSync(resolve(dist, '_md'), { recursive: true });
 for (const r of app.listMarkdownRoutes()) {
+  mkdirSync(dirname(resolve(dist, `_md${r.md}`)), { recursive: true });
   writeFileSync(resolve(dist, `_md${r.md}`), app.renderMarkdown(r.path));
   console.log(`markdown ${r.path} -> _md${r.md}`);
 }

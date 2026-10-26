@@ -1,4 +1,4 @@
-import { Suspense, lazy, startTransition, useEffect, useState } from 'react';
+import { Suspense, lazy, startTransition, useEffect, useLayoutEffect, useState } from 'react';
 import Lenis from 'lenis';
 import Nav from './components/Nav.jsx';
 import WhatWeDo from './components/WhatWeDo.jsx';
@@ -9,8 +9,9 @@ import Tools from './components/Tools.jsx';
 import Closing from './components/Closing.jsx';
 import HeroPrime from './heroes/HeroPrime.jsx';
 import { useRoute } from './router.jsx';
-import { setLenis } from './scroll.js';
+import { jumpTo, setLenis } from './scroll.js';
 import { NOT_FOUND, ORIGIN, PAGES as SEO } from './seo.js';
+import { SERVICES, servicePath } from './services.js';
 
 // Every page but the home page is its own route, so it stays out of the home page bundle.
 const StartProject = lazy(() => import('./pages/StartProject.jsx'));
@@ -18,8 +19,15 @@ const Careers = lazy(() => import('./pages/Careers.jsx'));
 const Privacy = lazy(() => import('./pages/Legal.jsx').then((m) => ({ default: m.Privacy })));
 const Terms = lazy(() => import('./pages/Legal.jsx').then((m) => ({ default: m.Terms })));
 const NotFound = lazy(() => import('./pages/NotFound.jsx'));
+const ServicePage = lazy(() => import('./pages/ServicePage.jsx'));
 
-export const PAGES = { '/start': StartProject, '/careers': Careers, '/privacy': Privacy, '/terms': Terms };
+export const PAGES = {
+  '/start': StartProject,
+  '/careers': Careers,
+  '/privacy': Privacy,
+  '/terms': Terms,
+  ...Object.fromEntries(SERVICES.map((s) => [servicePath(s), ServicePage])),
+};
 
 // Keeps the tab title and description in step with the page; the build bakes the same
 // values into each page's HTML for crawlers (src/seo.js).
@@ -70,11 +78,6 @@ const BELOW_FOLD = [WhatWeDo, HowWeWork, Work, About, Tools, Closing];
 // does the build-time render, which needs the whole page.
 function useBelowFold() {
   const [count, setCount] = useState(() => (import.meta.env.SSR || window.location.hash ? BELOW_FOLD.length : 0));
-  // The browser's own anchor scroll can run before React has rendered the target.
-  useEffect(() => {
-    const { hash } = window.location;
-    if (hash) document.querySelector(hash)?.scrollIntoView();
-  }, []);
   useEffect(() => {
     if (count >= BELOW_FOLD.length) return undefined;
     const id = setTimeout(() => startTransition(() => setCount((c) => c + 1)), 0);
@@ -83,12 +86,39 @@ function useBelowFold() {
   return BELOW_FOLD.slice(0, count);
 }
 
+// Every page opens at its top, or at its #section when the link names one: on first load,
+// on links between pages and on back and forward. Inner pages load their code on demand,
+// so a #section is looked for over the next frames until it has rendered.
+// Before paint, so a new page never shows a frame at the old position. (The build-time
+// render has no layout to run against.)
+const useBeforePaint = import.meta.env.SSR ? useEffect : useLayoutEffect;
+function useScrollOnRoute(route) {
+  useBeforePaint(() => {
+    const { hash } = window.location;
+    if (!hash) {
+      jumpTo(null);
+      return undefined;
+    }
+    let raf = 0;
+    let tries = 0;
+    const find = () => {
+      const target = document.querySelector(hash);
+      if (target) jumpTo(target);
+      else if (tries++ < 120) raf = requestAnimationFrame(find);
+      else jumpTo(null);
+    };
+    find();
+    return () => cancelAnimationFrame(raf);
+  }, [route]);
+}
+
 export default function App() {
   useSmoothScroll();
   const route = useRoute();
   const Page = route === '/' ? null : PAGES[route] || NotFound;
   const belowFold = useBelowFold();
   useHead(route);
+  useScrollOnRoute(route);
 
   return (
     <>
@@ -96,7 +126,7 @@ export default function App() {
       <Nav />
       <main>
         {Page ? (
-          <Suspense fallback={null}><Page /></Suspense>
+          <Suspense fallback={null}><Page route={route} /></Suspense>
         ) : (
           <>
             <HeroPrime />

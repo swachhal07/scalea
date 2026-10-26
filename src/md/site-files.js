@@ -5,6 +5,7 @@
 import { ABOUT, ORIGIN, PRIVATE_PATHS } from '../seo.js';
 import { SITE, SOCIAL } from '../site.jsx';
 import { BUDGETS } from '../pages/StartProject.jsx';
+import { SERVICES, servicePath } from '../services.js';
 import { abs, date, esc, link } from './format.js';
 import { listMarkdownRoutes, renderMarkdown } from './registry.jsx';
 
@@ -46,6 +47,7 @@ export function llmsTxt() {
       `Work is quoted as fixed-scope proposals; the project form offers budgets from ${BUDGETS[0].toLowerCase()} to ${BUDGETS[BUDGETS.length - 2]}. ` +
       `Contact: ${SITE.email}, ${SITE.phone} (phone and WhatsApp).`,
     `## Core pages\n\n${routes.filter((r) => r.group === 'core').map(line).join('\n')}`,
+    `## Services\n\n${routes.filter((r) => r.group === 'services').map(line).join('\n')}`,
     [
       '## Machine-readable',
       '',
@@ -108,6 +110,40 @@ export function catalog() {
       description: r.description,
       lastModified: r.updated.toISOString(),
     })),
+  };
+}
+
+// Service + FAQPage + BreadcrumbList JSON-LD for a service page.
+export function serviceJsonLd(path) {
+  const s = SERVICES.find((x) => servicePath(x) === path);
+  if (!s) return null;
+  const url = `${ORIGIN}${path}`;
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Service',
+        '@id': `${url}#service`,
+        name: s.name[0].toUpperCase() + s.name.slice(1),
+        description: s.description,
+        url,
+        provider: { '@id': `${ORIGIN}/#org` },
+        areaServed: ABOUT.areaServed,
+        hasOfferCatalog: {
+          '@type': 'OfferCatalog',
+          name: 'What’s included',
+          itemListElement: s.includes.map(([t, d]) => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: t, description: d } })),
+        },
+      },
+      { '@type': 'FAQPage', mainEntity: s.faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: `${ORIGIN}/` },
+          { '@type': 'ListItem', position: 2, name: s.label, item: url },
+        ],
+      },
+    ],
   };
 }
 

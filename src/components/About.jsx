@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { motion, useInView, useMotionValueEvent, useReducedMotion } from 'framer-motion';
 import { EASE } from '../lib.js';
 import { useScrollProgress } from '../scroll.js';
+import Globe from './Globe.jsx';
 
 // About: a statement whose words light up as it scrolls past, then a bento of the studio
 // in motion: live Kathmandu time, numbers that count up, and one team carrying a project
@@ -18,7 +19,7 @@ const KEY = new Set(['Scalea,', 'Kathmandu', 'designs,', 'builds,', 'launches', 
 const LIGHT_RANGE = (top, height, vh) => [top - vh * 0.85, top + height - vh * 0.35];
 
 export const NUMBERS = [
-  { n: 8, suffix: '+', k: 'Brands served', d: 'Across automotive, agriculture, machinery and finance.' },
+  { n: 20, suffix: '+', k: 'Brands served', d: 'Across automotive, agriculture, machinery and finance.' },
   { n: 7, suffix: '', k: 'Days to launch', d: 'From kickoff call to a live product.' },
   { n: 24, suffix: 'h', k: 'Reply time', d: 'A real person, the same working day.' },
 ];
@@ -56,7 +57,8 @@ function Statement() {
   const still = useReducedMotion();
   useMotionValueEvent(progress, 'change', (p) => ref.current?.style.setProperty('--p', p.toFixed(3)));
   return (
-    <p className="ab-say" ref={ref} style={{ '--n': WORDS.length, '--p': still ? 1 : 0 }} aria-label={STATEMENT}>
+    <p className="ab-say" ref={ref} style={{ '--n': WORDS.length, '--p': still ? 1 : 0 }}>
+      <span className="sr-only">{STATEMENT}</span>
       {WORDS.map((w, i) => (
         <span key={i} className={KEY.has(w) ? 'is-key' : ''} style={{ '--i': i }} aria-hidden="true">{w} </span>
       ))}
@@ -95,17 +97,7 @@ function KathmanduCard() {
         </div>
         <span className={`ab-live ${open ? 'is-open' : ''}`}><i />{open ? 'Online now. We reply today.' : 'Offline. We reply first thing tomorrow.'}</span>
       </div>
-      <div className="ab-radar" aria-hidden="true">
-        <span className="ab-ring r1" /><span className="ab-ring r2" /><span className="ab-ring r3" />
-        <span className="ab-sweep" />
-        <span className="ab-ping" /><span className="ab-ping p2" />
-        <span className="ab-pin" />
-        <span className="ab-pin-label">Kathmandu</span>
-        <i className="ab-dot" style={{ left: '22%', top: '38%' }} />
-        <i className="ab-dot" style={{ left: '74%', top: '30%' }} />
-        <i className="ab-dot" style={{ left: '66%', top: '72%' }} />
-        <i className="ab-dot" style={{ left: '30%', top: '70%' }} />
-      </div>
+      <Globe />
     </motion.article>
   );
 }

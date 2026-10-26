@@ -70,8 +70,11 @@
           done();
           window.__intro = { ready: Promise.resolve(), leave: function () {} };
         };
-        // Plays on every load and reload; skipped for people who prefer less motion.
-        if (matchMedia('(prefers-reduced-motion: reduce)').matches) return skip();
+        // Plays once per tab, on the home page: skipped on later visits and reloads, when
+        // arriving straight on another page, and for people who prefer less motion.
+        var seen = false;
+        try { seen = sessionStorage.getItem('scalea-intro') === '1'; sessionStorage.setItem('scalea-intro', '1'); } catch (e) {}
+        if (seen || location.pathname !== '/' || matchMedia('(prefers-reduced-motion: reduce)').matches) return skip();
 
         // Draws the particles. Each point's whole path (gather, wobble, scatter, turn, camera)
         // is worked out on the GPU in the vertex shader, so a frame costs one draw call. Where

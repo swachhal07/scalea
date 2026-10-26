@@ -6,6 +6,7 @@ import Bars from './Bars.jsx';
 import DotField from '../howwework/DotField.jsx';
 import FlickeringGrid from './FlickeringGrid.jsx';
 import { SITE, SocialLinks, whatsappHref } from '../site.jsx';
+import { SERVICES, servicePath } from '../services.js';
 
 export const COPY = {
   heading: 'Let’s build what’s next.',
@@ -14,7 +15,7 @@ export const COPY = {
 };
 
 const COLS = [
-  { k: 'Services', links: ['Web Development', 'Mobile Apps', 'UX & SEO Audits', 'Launch & ASO', 'SEO & Paid Ads', 'AI & GEO'] },
+  { k: 'Services', links: SERVICES.map((s) => s.label) },
   { k: 'Company', links: ['About', 'Work', 'Process', 'Careers'] },
   { k: 'Contact', links: [SITE.email, SITE.phone, 'Kathmandu, Nepal', 'WhatsApp us'] },
 ];
@@ -26,6 +27,7 @@ const HREFS = {
   Work: '/#work', Process: '/#process', About: '/#about',
   'Kathmandu, Nepal': null,
   Careers: '/careers',
+  ...Object.fromEntries(SERVICES.map((s) => [s.label, servicePath(s)])),
 };
 
 function hrefFor(label) {
