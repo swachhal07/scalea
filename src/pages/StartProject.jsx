@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { EASE } from '../lib.js';
+import Bars from '../components/Bars.jsx';
+import { Field, Group, isEmail } from './Field.jsx';
+import { SITE, whatsappHref } from '../site.jsx';
 
 const SERVICES = [
   'Website', 'Web app', 'Mobile app', 'UX & SEO audit', 'SEO & paid ads', 'AI & automation',
@@ -14,11 +17,11 @@ const STEPS = [
   ['03', 'A fixed-scope proposal', 'Scope, timeline and price in writing within three working days.'],
 ];
 
-const INBOX = 'hello@scalevia.com';
+const INBOX = 'hello@scalea.com';
 
 const reveal = {
-  hidden: { opacity: 0, y: 24 },
-  show: (i = 0) => ({ opacity: 1, y: 0, transition: { duration: 1, delay: i * 0.08, ease: EASE } }),
+  hidden: { opacity: 0, transform: 'translateY(24px)' },
+  show: (i = 0) => ({ opacity: 1, transform: 'translateY(0px)', transition: { duration: 1, delay: i * 0.08, ease: EASE } }),
 };
 
 const EMPTY = {
@@ -62,7 +65,7 @@ export default function StartProject() {
 
     const next = {};
     if (!form.name.trim()) next.name = 'We need a name to reply to.';
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) next.email = 'Please check this email address.';
+    if (!isEmail(form.email)) next.email = 'Please check this email address.';
     if (form.details.trim().length < 20) next.details = 'A couple of sentences is plenty — tell us a bit more.';
 
     setErrors(next);
@@ -101,6 +104,7 @@ export default function StartProject() {
 
           <motion.dl className="sp-meta" variants={reveal} custom={4}>
             <div><dt>Email</dt><dd><a href={`mailto:${INBOX}`}>{INBOX}</a></dd></div>
+            <div><dt>Phone / WhatsApp</dt><dd><a href={whatsappHref()} target="_blank" rel="noopener noreferrer">{SITE.phone}</a></dd></div>
             <div><dt>Studio</dt><dd>Kathmandu, Nepal</dd></div>
             <div><dt>Reply time</dt><dd>Within 24 hours</dd></div>
           </motion.dl>
@@ -195,7 +199,7 @@ export default function StartProject() {
               </Field>
 
               <div className="sp-submit">
-                <button type="submit" className="p-cta">Send project brief</button>
+                <button type="submit" className="p-cta"><Bars /><span className="p-cta-label">Send project brief</span></button>
                 <p>We reply within one working day. Your details stay with us.</p>
               </div>
             </form>
@@ -204,38 +208,12 @@ export default function StartProject() {
       </motion.div>
 
       <div className="sp-foot">
-        <span>© {new Date().getFullYear()} Scalevia. All rights reserved.</span>
+        <span>© {new Date().getFullYear()} Scalea. All rights reserved.</span>
         <span>
           <a href="/">Back to site</a>
           <a href={`mailto:${INBOX}`}>{INBOX}</a>
         </span>
       </div>
     </section>
-  );
-}
-
-function Field({ label, hint, error, children }) {
-  return (
-    <label className={`sp-field ${error ? 'is-bad' : ''}`}>
-      <span className="sp-label">
-        {label}
-        {hint && <span className="sp-hint">{hint}</span>}
-      </span>
-      {children}
-      {error && <span className="sp-error">{error}</span>}
-    </label>
-  );
-}
-
-/** Chip rows are a group rather than a label, which wraps no one field. */
-function Group({ label, hint, children }) {
-  return (
-    <div className="sp-field" role="group" aria-label={label}>
-      <span className="sp-label">
-        {label}
-        {hint && <span className="sp-hint">{hint}</span>}
-      </span>
-      <div className="sp-chips">{children}</div>
-    </div>
   );
 }

@@ -124,22 +124,24 @@ export function ReviewAnim() {
 }
 
 /* Launch: the app goes live in the store, downloads climb, it hits #1. */
+// Writes the count straight into the element, so the card doesn't re-render every frame.
 function useCountTo(target, ms = 900) {
-  const [v, setV] = useState(0);
+  const ref = useRef(null);
+  const v = useRef(0);
   useEffect(() => {
-    const from = target === 0 ? 0 : v;
+    const from = target === 0 ? 0 : v.current;
     const start = performance.now();
     let raf;
     const step = (t) => {
       const k = Math.min(1, (t - start) / ms);
-      setV(Math.round(from + (target - from) * (1 - (1 - k) ** 3)));
+      v.current = Math.round(from + (target - from) * (1 - (1 - k) ** 3));
+      if (ref.current) ref.current.textContent = v.current.toLocaleString('en-US');
       if (k < 1) raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);
     return () => cancelAnimationFrame(raf);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [target]);
-  return v;
+  }, [target, ms]);
+  return ref;
 }
 export function LaunchAnim() {
   const [ref, n] = useLoop(5, [1100, 900, 1200, 2600, 500]);
@@ -161,7 +163,7 @@ export function LaunchAnim() {
         </div>
         <div className="ln-stats">
           <div><b>4.9 ★</b><small>1.2k ratings</small></div>
-          <div><b>{downloads.toLocaleString('en-US')}</b><small>Downloads</small></div>
+          <div><b ref={downloads}>0</b><small>Downloads</small></div>
           <div><b>{top ? '#1' : '—'}</b><small>Productivity</small></div>
         </div>
       </div>

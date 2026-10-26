@@ -1,8 +1,9 @@
-import { motion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { siNextdotjs, siFigma, siAnthropic, siN8n } from 'simple-icons';
 import { EASE } from '../lib.js';
 
-// Tools flow into the Scalevia engine, which turns them into outcomes.
+// Tools flow into the Scalea engine, which turns them into outcomes.
 // Positions are % of the stage so the SVG wiring lines up at every width.
 const TOOLS = [
   { icon: siFigma, name: 'Figma', role: 'Design', y: 17 },
@@ -35,14 +36,70 @@ function Mark() {
   );
 }
 
+// Narrow-screen wiring, in a 100×100 box stretched across the stage: two tool
+// columns merge into the engine, then the engine splits into three outcome tiles.
+const FAN_IN = [
+  'M25,0 C25,60 50,40 50,100',
+  'M75,0 C75,60 50,40 50,100',
+];
+const FAN_OUT = [
+  'M50,0 C50,60 16.7,40 16.7,100',
+  'M50,0 L50,100',
+  'M50,0 C50,60 83.3,40 83.3,100',
+];
+
+function Fan({ className, paths }) {
+  return (
+    <svg className={className} viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+      {paths.map((d) => <path key={d} d={d} className="tl-wire" />)}
+      {paths.map((d, i) => <path key={`p${d}`} d={d} className="tl-pulse" style={{ animationDelay: `${i * 0.5}s` }} />)}
+    </svg>
+  );
+}
+
+// Narrow screens: three outcome tiles share one description below them. It moves
+// on by itself while the section is on screen; a tap picks one and stops that.
+function MobileOutcomes({ active }) {
+  const [n, setN] = useState(0);
+  const [picked, setPicked] = useState(false);
+  const still = useReducedMotion();
+  useEffect(() => {
+    if (!active || picked || still) return undefined;
+    const id = setTimeout(() => setN((v) => (v + 1) % OUTCOMES.length), 3200);
+    return () => clearTimeout(id);
+  }, [n, active, picked, still]);
+  return (
+    <motion.div className="tl-mob" variants={reveal} custom={3}>
+      <div className="tl-mob-tiles">
+        {OUTCOMES.map((o, i) => (
+          <button
+            key={o.k}
+            type="button"
+            className={i === n ? 'is-on' : ''}
+            aria-pressed={i === n}
+            onClick={() => { setN(i); setPicked(true); }}
+          >
+            {o.k}
+          </button>
+        ))}
+      </div>
+      <p className="tl-mob-detail" aria-live="polite">
+        <span key={n}>{OUTCOMES[n].d}</span>
+      </p>
+    </motion.div>
+  );
+}
+
 const reveal = {
-  hidden: { opacity: 0, y: 24 },
-  show: (i = 0) => ({ opacity: 1, y: 0, transition: { duration: 0.9, delay: i * 0.08, ease: EASE } }),
+  hidden: { opacity: 0, transform: 'translateY(24px)' },
+  show: (i = 0) => ({ opacity: 1, transform: 'translateY(0px)', transition: { duration: 0.9, delay: i * 0.08, ease: EASE } }),
 };
 
 export default function Tools() {
+  const ref = useRef(null);
+  const inView = useInView(ref, { margin: '100px' });
   return (
-    <section className="tl" id="tools">
+    <section className={`tl ${inView ? '' : 'is-idle'}`} id="tools" ref={ref}>
       <motion.header className="tl-head" initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.5 }}>
         <motion.span className="tl-eyebrow" variants={reveal}><i />Tools we use</motion.span>
         <motion.h2 variants={reveal} custom={1}>The stack behind the results.</motion.h2>
@@ -72,6 +129,10 @@ export default function Tools() {
             );
           })}
         </svg>
+        {/* Narrow screens: the tools funnel into the engine, which fans out to the outcomes. */}
+        <Fan className="tl-fan tl-fan-in" paths={FAN_IN} />
+        <Fan className="tl-fan tl-fan-out" paths={FAN_OUT} />
+        <MobileOutcomes active={inView} />
 
         {TOOLS.map((t, i) => (
           <motion.div key={t.name} className="tl-tool" style={{ top: `${t.y}%` }} variants={reveal} custom={i}>
@@ -84,7 +145,7 @@ export default function Tools() {
           <span className="tl-ring r1" aria-hidden="true" />
           <span className="tl-ring r2" aria-hidden="true" />
           <span className="tl-core"><Mark /></span>
-          <span className="tl-label"><i />Scalevia engine</span>
+          <span className="tl-label"><i />Scalea engine</span>
         </motion.div>
 
         {OUTCOMES.map((o, i) => (

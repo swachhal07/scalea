@@ -1,6 +1,8 @@
 import { useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { EASE } from '../lib.js';
+import Bars from '../components/Bars.jsx';
+import CycleWord from '../components/CycleWord.jsx';
 import { useHero } from './shared.jsx';
 import {
   WebCard, MobileCard, UXCard, AuditCard, SeoCard, AdsCard, GeoCard, ChartCard,
@@ -31,9 +33,16 @@ const BRANDS = [
   { id: 'manokamana', main: 'Manokamana Hire Purchase', logo: '/brands/manokamana.png' },
 ];
 
+// Hero CTA: "Start …" walks through the journey, holding longest on Scaling, then repeats.
+const CYCLE = [
+  { w: 'Developing', ms: 3000 },
+  { w: 'Growing', ms: 3000 },
+  { w: 'Scaling', ms: 4500 },
+];
+
 const rise = (delay) => ({
-  initial: { opacity: 0, y: 16 },
-  animate: { opacity: 1, y: 0 },
+  initial: { opacity: 0, transform: 'translateY(16px)' },
+  animate: { opacity: 1, transform: 'translateY(0px)' },
   transition: { duration: 1.1, delay, ease: EASE },
 });
 
@@ -42,8 +51,8 @@ function Edge({ c, i, progress }) {
   return (
     <motion.div className={`p-card ${c.cls}`} style={{ y, width: `${c.w}em` }}>
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, transform: 'translateY(30px)' }}
+        animate={{ opacity: 1, transform: 'translateY(0px)' }}
         transition={{ duration: 1.6, delay: 0.5 + i * 0.08, ease: EASE }}
       >
         <div className="p-float"><c.C /></div>
@@ -80,7 +89,7 @@ export default function HeroPrime() {
   const copyOpacity = useTransform(progress, [0, 0.45], [1, 0]);
 
   return (
-    <section className={`hx hx-prime ${idle ? 'is-idle' : ''}`} ref={ref} onPointerMove={onMove}>
+    <section className={`hx hx-prime ${idle ? 'is-idle' : ''}`} id="top" ref={ref} onPointerMove={onMove}>
       <div className="p-corner p-corner-l" aria-hidden="true" />
       <div className="p-corner p-corner-r" aria-hidden="true" />
       <div className="p-dust" aria-hidden="true" />
@@ -104,14 +113,16 @@ export default function HeroPrime() {
         </motion.a>
         {/* The headline is the LCP element: it starts faint rather than invisible
             so it counts as painted on the first frame, then rises in with the rest. */}
-        <motion.h1 className="p-title" {...rise(0.2)} initial={{ opacity: 0.15, y: 16 }}>
+        <motion.h1 className="p-title" {...rise(0.2)} initial={{ opacity: 0.15, transform: 'translateY(16px)' }}>
           Build. Launch. Scale.<br />From idea to growth.
         </motion.h1>
         <motion.p className="p-lede" {...rise(0.32)}>
           We build digital products, improve digital experiences, and help businesses grow
           through technology, marketing and AI.
         </motion.p>
-        <motion.a href="/start" className="p-cta" {...rise(0.44)}>Start Scaling</motion.a>
+        <motion.a href="/start" className="p-cta" aria-label="Start scaling" {...rise(0.44)}>
+          <Bars /><span className="p-cta-label" aria-hidden="true">Start <CycleWord words={CYCLE} /></span>
+        </motion.a>
         <motion.a href="#services" className="p-note" {...rise(0.54)}>
           <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" /><path d="M8 7.2v3.6M8 5.2v.1" /></svg>
           Or explore our services
@@ -119,7 +130,7 @@ export default function HeroPrime() {
       </motion.div>
 
       <motion.div className="p-trust" {...rise(0.8)}>
-        <p>Trusted by leading brands across automotive, agriculture and finance.</p>
+        <p>Trusted by leading Nepali brands across automotive, agriculture and finance.</p>
         <div className="p-marquee">
           {[0, 1].map((dup) => (
             <ul key={dup} aria-hidden={dup === 1} aria-label={dup === 0 ? 'Clients' : undefined}>

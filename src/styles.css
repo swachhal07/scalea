@@ -103,24 +103,61 @@ a:hover .arrow { transform: translateX(4px); }
   .nav { height: 64px; }
   .nav-cta { display: none; }
   .logo { font-size: 13px; }
+  /* Toggle: a dark tile like the logo's; the two lines (one short) cross into an X */
   .nav-toggle {
     display: grid; place-content: center; gap: 6px;
-    width: 40px; height: 40px;
-    border-radius: 999px; border: 1px solid var(--line-2);
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    background: linear-gradient(180deg, #2a2a2a, #0f0f0f);
+    border: 1px solid rgba(255, 255, 255, 0.14);
   }
-  .nav-toggle span { display: block; width: 14px; height: 1px; background: var(--text); transition: transform 0.4s var(--ease); }
-  .nav-toggle.is-open span:first-child { transform: translateY(3.5px) rotate(45deg); }
-  .nav-toggle.is-open span:last-child { transform: translateY(-3.5px) rotate(-45deg); }
+  .nav-toggle span {
+    display: block; width: 18px; height: 1.5px; border-radius: 2px; background: #fff;
+    transition: transform 0.45s var(--ease);
+  }
+  .nav-toggle span:last-child { transform: scaleX(0.6); transform-origin: 100% 50%; }
+  .nav-toggle.is-open span:first-child { transform: translateY(3.75px) rotate(45deg); }
+  .nav-toggle.is-open span:last-child { transform-origin: 50% 50%; transform: translateY(-3.75px) rotate(-45deg); }
+
+  /* Sheet: fills the screen under the bar */
   .nav-sheet {
     display: flex; flex-direction: column;
-    position: absolute; top: 64px; left: 12px; right: 12px;
-    padding: 12px 20px 20px;
+    position: absolute; top: 72px; left: 0; right: 0;
+    height: calc(100svh - 96px);
+    padding: 22px 22px 22px;
     border-radius: 18px;
-    background: rgba(14, 15, 18, 0.96);
-    border: 1px solid var(--line-2);
+    background: radial-gradient(90% 60% at 50% 0%, rgba(255, 255, 255, 0.06), transparent 70%), #070708;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
-  .nav-sheet a { padding: 14px 0; font-size: 18px; border-bottom: 1px solid var(--line); }
-  .nav-sheet-cta { margin-top: 8px; border-bottom: 0 !important; color: var(--text); }
+  .nav-sheet-k {
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.4);
+  }
+  .nav-sheet-live { display: inline-flex; align-items: center; gap: 8px; letter-spacing: 0.1em; color: rgba(255, 255, 255, 0.7); }
+  .nav-sheet-live i { width: 6px; height: 6px; border-radius: 50%; background: #fff; box-shadow: 0 0 8px #fff; animation: tl-blink 2s ease-in-out infinite; }
+  .nav-sheet-links { display: flex; flex-direction: column; margin-top: 10px; }
+  .nav-sheet-links a {
+    display: flex; align-items: baseline; gap: 14px;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .nav-sheet-links small { width: 22px; font-family: var(--mono); font-size: 11px; color: rgba(255, 255, 255, 0.35); }
+  .nav-sheet-links span { flex: 1; font-size: 32px; font-weight: 600; letter-spacing: -0.03em; line-height: 1.05; color: #fff; }
+  .nav-sheet-links i { font-style: normal; font-size: 20px; color: rgba(255, 255, 255, 0.35); transition: transform 0.4s var(--ease), color 0.4s var(--ease); }
+  .nav-sheet-links a:active i { transform: translateX(4px); color: #fff; }
+  .nav-sheet-foot { display: flex; flex-direction: column; gap: 18px; margin-top: auto; padding-top: 28px; }
+  .nav-sheet-foot .p-cta { width: 100%; }
+  .nav-sheet-contact { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .nav-sheet-contact > a { font-size: 15px; color: rgba(255, 255, 255, 0.7); }
+  .nav-sheet-contact ul { list-style: none; display: flex; gap: 8px; }
+  .nav-sheet-contact ul a {
+    display: grid; place-items: center; width: 38px; height: 38px;
+    border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+  .nav-sheet-contact svg { width: 16px; height: 16px; fill: rgba(255, 255, 255, 0.8); }
 }
 
 /* Lenis */

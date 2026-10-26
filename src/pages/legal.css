@@ -1,0 +1,103 @@
+/* ================= Privacy, terms and careers pages ================= */
+.lg {
+  position: relative;
+  min-height: 100vh;
+  padding: clamp(150px, 14vw, 200px) var(--gutter) clamp(80px, 9vw, 130px);
+  background: radial-gradient(70% 40% at 50% 10%, rgba(255, 255, 255, 0.05), transparent 70%), #000;
+}
+.lg-wrap { max-width: 1040px; margin: 0 auto; }
+
+.lg-head { max-width: 720px; margin-bottom: clamp(48px, 6vw, 80px); }
+.lg-head h1 {
+  font-size: clamp(40px, 5vw, 72px); font-weight: 600; line-height: 1.04; letter-spacing: -0.045em;
+  color: #fff; text-shadow: 0 0 28px rgba(255, 255, 255, 0.25); margin-bottom: 20px;
+}
+.lg-lede { font-size: clamp(16px, 1.3vw, 19px); line-height: 1.6; color: rgba(255, 255, 255, 0.6); }
+.lg-date {
+  display: inline-block; margin-top: 22px; padding: 6px 12px;
+  border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.12);
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.lg-body { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: clamp(32px, 5vw, 72px); align-items: start; }
+.lg-toc { position: sticky; top: 140px; }
+.lg-toc b {
+  display: block; margin-bottom: 14px;
+  font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+}
+.lg-toc ol { list-style: none; display: grid; gap: 10px; }
+.lg-toc a { font-size: 14px; color: rgba(255, 255, 255, 0.6); transition: color 0.3s var(--ease); }
+.lg-toc a:hover { color: #fff; }
+
+.lg-sections { display: grid; gap: 14px; }
+.lg-sections article {
+  scroll-margin-top: 140px;
+  padding: clamp(22px, 2.6vw, 32px);
+  border-radius: 20px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
+  border: 1px solid rgba(255, 255, 255, 0.09);
+}
+.lg-sections h2 { display: flex; align-items: baseline; gap: 14px; margin-bottom: 12px; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; color: #fff; }
+.lg-sections h2 span { font-family: var(--mono); font-size: 12px; font-weight: 400; color: rgba(255, 255, 255, 0.35); }
+.lg-sections p { font-size: 15.5px; line-height: 1.7; color: rgba(255, 255, 255, 0.65); }
+.lg-sections p + p { margin-top: 12px; }
+.lg-sections a { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
+
+.lg .sp-foot { max-width: 1040px; }
+
+@media (max-width: 767px) {
+  .lg { padding-top: 120px; }
+  .lg-body { grid-template-columns: 1fr; }
+  .lg-toc { display: none; }
+}
+
+/* ---------- Careers ---------- */
+.cr-perks { list-style: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: clamp(48px, 6vw, 72px); }
+.cr-perks li {
+  display: flex; gap: 14px; padding: 22px;
+  border-radius: 18px; border: 1px solid rgba(255, 255, 255, 0.09);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
+}
+.cr-perks b { display: block; margin-bottom: 4px; font-size: 16px; font-weight: 600; color: #fff; }
+.cr-perks p { font-size: 14px; line-height: 1.5; color: rgba(255, 255, 255, 0.55); }
+
+.cr-head { margin-left: auto; margin-right: auto; text-align: center; }
+.cr-head h1 { text-wrap: balance; }
+
+/* No open roles: a short note beside the CV form */
+.cr-apply { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(32px, 5vw, 72px); align-items: start; }
+.cr-note { position: sticky; top: 150px; }
+.cr-status {
+  display: inline-flex; align-items: center; gap: 8px; margin-bottom: 18px; padding: 6px 12px;
+  border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.12);
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255, 255, 255, 0.6);
+}
+.cr-status i { width: 6px; height: 6px; border-radius: 50%; background: rgba(255, 255, 255, 0.5); }
+.cr-note h2 { font-size: clamp(28px, 3vw, 40px); font-weight: 600; line-height: 1.1; letter-spacing: -0.035em; color: #fff; margin-bottom: 14px; }
+.cr-note p { font-size: 16px; line-height: 1.6; color: rgba(255, 255, 255, 0.6); }
+
+/* CV picker */
+.cr-drop {
+  position: relative; display: flex; align-items: center; gap: 14px;
+  padding: 16px; border-radius: 14px; cursor: pointer;
+  border: 1px dashed rgba(255, 255, 255, 0.22); background: rgba(255, 255, 255, 0.03);
+  transition: border-color 0.3s var(--ease), background 0.3s var(--ease);
+}
+.cr-drop:hover, .cr-drop:focus-within { border-color: rgba(255, 255, 255, 0.5); background: rgba(255, 255, 255, 0.05); }
+.cr-drop.has-file { border-style: solid; border-color: rgba(255, 255, 255, 0.35); }
+.cr-drop input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.cr-drop-ico { display: grid; place-items: center; flex-shrink: 0; width: 40px; height: 40px; border-radius: 11px; background: #fff; color: #000; font-size: 16px; font-weight: 700; }
+.cr-drop-text { display: grid; gap: 2px; min-width: 0; }
+.cr-drop-text b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 15px; font-weight: 600; color: #fff; }
+.cr-drop-text small { font-size: 13px; color: rgba(255, 255, 255, 0.5); }
+.sp-field.is-bad .cr-drop { border-color: rgba(255, 140, 130, 0.65); }
+.cr-card { scroll-margin-top: 130px; }
+.cr-card .p-cta:disabled { opacity: 0.6; cursor: progress; }
+
+@media (max-width: 767px) {
+  .cr-perks { grid-template-columns: 1fr; }
+  .cr-apply { grid-template-columns: 1fr; }
+  .cr-note { position: static; }
+}

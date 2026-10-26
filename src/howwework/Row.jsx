@@ -17,8 +17,8 @@ export default function Row() {
       <motion.span
         className="hw-row-line"
         aria-hidden="true"
-        initial={{ scaleX: 0 }}
-        whileInView={{ scaleX: 1 }}
+        initial={{ transform: 'scaleX(0)' }}
+        whileInView={{ transform: 'scaleX(1)' }}
         viewport={{ once: true, amount: 0.4 }}
         transition={{ duration: 1.8, ease: EASE }}
       />
@@ -27,8 +27,8 @@ export default function Row() {
           key={s.k}
           className="hw-glass"
           onMouseMove={track}
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 1, delay: 0.2 + i * 0.12, ease: EASE }}
         >

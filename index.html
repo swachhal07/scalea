@@ -3,8 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Scalevia builds, launches, markets and scales digital products." />
-    <title>Scalevia — Build. Launch. Scale.</title>
+    <meta name="description" content="Scalea builds, launches, markets and scales digital products." />
+    <title>Scalea — Build. Launch. Scale.</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#000000" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <!-- Fonts load without blocking first paint; text shows in the fallback until they arrive. -->
@@ -27,6 +29,193 @@
     </noscript>
   </head>
   <body>
+    <!-- Intro: the "Particle Assembly" mark. A cloud of soft light points gathers into the three
+         Scalea bars (seen in 3D, turning slowly), then scatters as the site fades in. Inline so it
+         paints with the first frame, before any of the app's JavaScript has loaded. -->
+    <style>
+      #intro { position: fixed; inset: 0; z-index: 1000; background: #0b0b0c; transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.8s; }
+      #intro canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+      #intro b {
+        /* padding-left balances the trailing letter-spacing, so the word sits truly centred */
+        position: absolute; left: 50%; translate: -50% 0; white-space: nowrap; padding-left: 0.38em;
+        font: 700 clamp(24px, 2.8vw, 36px)/1 'Archivo', system-ui, sans-serif; font-variation-settings: 'wdth' 118; letter-spacing: 0.38em; color: #fff;
+        text-shadow: 0 0 24px rgba(255, 255, 255, 0.35);
+        opacity: 0; transform: translateY(10px); transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      #intro.is-word b { opacity: 1; transform: none; }
+      #intro.is-scatter b { opacity: 0; transform: translateY(-12px); transition-duration: 0.6s; }
+      #intro.is-leaving { opacity: 0; visibility: hidden; }
+      html.has-intro { overflow: hidden; }
+    </style>
+    <div id="intro" aria-hidden="true"><canvas></canvas><b>SCALEA</b></div>
+    <script>
+      (function () {
+        var intro = document.getElementById('intro');
+        var done = function () { intro.remove(); document.documentElement.classList.remove('has-intro'); };
+        var skip = function () {
+          done();
+          window.__intro = { ready: Promise.resolve(), leave: function () {} };
+        };
+        // Plays on every load and reload; skipped for people who prefer less motion.
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches) return skip();
+
+        // Draws the particles. Each point's whole path (gather, wobble, scatter, turn, camera)
+        // is worked out on the GPU in the vertex shader, so a frame costs one draw call. Where
+        // the browser allows, this runs in a worker on its own thread, so the site loading and
+        // starting up in the background can never make the intro stutter. Returns false if
+        // WebGL is unavailable.
+        function runIntro(canvas, o, post) {
+          var gl = canvas.getContext('webgl', { alpha: true, antialias: false, depth: false, stencil: false, powerPreference: 'low-power' });
+          if (!gl) return false;
+          var VS = 'attribute vec3 aCloud; attribute vec3 aTarget; attribute float aSeed;\n' +
+            'uniform float uT, uFocal, uCamZ, uSize, uDpr; uniform vec2 uRes;\n' +
+            'const float SC = 2500.0, SCMS = 1100.0, CAMY = 0.25;\n' +
+            'float sm(float a, float b, float x) { float k = clamp((x - a) / (b - a), 0.0, 1.0); return k * k * (3.0 - 2.0 * k); }\n' +
+            'void main() {\n' +
+            '  float sd = aSeed * 0.18, ts = uT / 1000.0;\n' +
+            '  float out_ = sm(SC + sd * 1600.0, SC + SCMS * 0.7 + sd * 1600.0, uT);\n' +
+            '  float spread = 1.0 + 0.6 * sm(SC, SC + SCMS * 1.6, uT);\n' +
+            '  float k = sm(150.0 + sd * 3200.0, 1250.0 + sd * 3200.0, uT) * (1.0 - out_);\n' +
+            '  vec3 c = aCloud * spread;\n' +
+            '  vec3 p = c + (aTarget - c) * k + (1.0 - k) * 0.25 * sin(ts * 1.3 + aSeed * 40.0 + vec3(0.0, 2.0, 4.0));\n' +
+            '  float ang = -0.45 + ts * 0.16, cs = cos(ang), sn = sin(ang);\n' +
+            '  float rx = p.x * cs + p.z * sn, rz = -p.x * sn + p.z * cs;\n' +
+            '  float dist = uCamZ - rz;\n' +
+            '  gl_Position = vec4(rx * uFocal / dist / (uRes.x * 0.5), (p.y - CAMY) * uFocal / dist / (uRes.y * 0.5), 0.0, 1.0);\n' +
+            '  gl_PointSize = max(1.0, uSize * (uRes.y * 0.5) / dist * uDpr);\n' +
+            '}';
+          // Soft round point: full white at the centre, 60% at 0.4 of the radius, gone at the edge.
+          var FS = 'precision mediump float;\n' +
+            'void main() {\n' +
+            '  float d = length(gl_PointCoord - 0.5) * 2.0;\n' +
+            '  float a = d < 0.4 ? mix(1.0, 0.6, d / 0.4) : mix(0.6, 0.0, (d - 0.4) / 0.6);\n' +
+            '  if (a <= 0.0) discard;\n' +
+            '  gl_FragColor = vec4(vec3(a), a);\n' +
+            '}';
+          function shader(type, src) { var s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; }
+          var prog = gl.createProgram();
+          gl.attachShader(prog, shader(gl.VERTEX_SHADER, VS));
+          gl.attachShader(prog, shader(gl.FRAGMENT_SHADER, FS));
+          gl.linkProgram(prog);
+          if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return false;
+          gl.useProgram(prog);
+
+          // Targets fill three slabs (x centre, height); the cloud is a squashed sphere around them.
+          var BARS = [[-1.25, 1.3], [0, 2.25], [1.25, 3.2]], N = o.n;
+          var data = new Float32Array(N * 7);
+          for (var i = 0; i < N; i++) {
+            var bar = BARS[i % 3], q = i * 7;
+            var r = 2.6 + Math.random() * 2.4, th = Math.random() * Math.PI * 2, ph = Math.acos(2 * Math.random() - 1);
+            data[q] = r * Math.sin(ph) * Math.cos(th);
+            data[q + 1] = r * Math.cos(ph) * 0.7;
+            data[q + 2] = r * Math.sin(ph) * Math.sin(th);
+            data[q + 3] = bar[0] + (Math.random() - 0.5) * 0.8;
+            data[q + 4] = -1.6 + Math.random() * bar[1];
+            data[q + 5] = (Math.random() - 0.5) * 0.8;
+            data[q + 6] = Math.random();
+          }
+          gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+          gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+          [['aCloud', 3, 0], ['aTarget', 3, 12], ['aSeed', 1, 24]].forEach(function (a) {
+            var loc = gl.getAttribLocation(prog, a[0]);
+            gl.enableVertexAttribArray(loc);
+            gl.vertexAttribPointer(loc, a[1], gl.FLOAT, false, 28, a[2]);
+          });
+          var U = {};
+          ['uT', 'uFocal', 'uCamZ', 'uSize', 'uDpr', 'uRes'].forEach(function (n) { U[n] = gl.getUniformLocation(prog, n); });
+          gl.enable(gl.BLEND);
+          gl.blendFunc(gl.ONE, gl.ONE); // additive, so overlapping points glow
+          gl.clearColor(0, 0, 0, 0);
+          gl.uniform1f(U.uSize, 0.075);
+
+          function size(v) {
+            canvas.width = Math.round(v.w * v.dpr); canvas.height = Math.round(v.h * v.dpr);
+            gl.viewport(0, 0, canvas.width, canvas.height);
+            gl.uniform1f(U.uFocal, v.focal);
+            gl.uniform1f(U.uCamZ, v.camZ);
+            gl.uniform1f(U.uDpr, v.dpr);
+            gl.uniform2f(U.uRes, v.w, v.h);
+          }
+          size(o.view);
+
+          // Time is measured against the page's start, so worker and page agree on the timeline.
+          var origin = performance.timeOrigin, stopped = false;
+          var raf = self.requestAnimationFrame ? self.requestAnimationFrame.bind(self) : function (f) { return setTimeout(function () { f(performance.now()); }, 16); };
+          (function frame() {
+            if (stopped) return;
+            gl.clear(gl.COLOR_BUFFER_BIT);
+            gl.uniform1f(U.uT, origin + performance.now() - o.start);
+            gl.drawArrays(gl.POINTS, 0, N);
+            raf(frame);
+          })();
+          post({ resize: size, stop: function () { stopped = true; } });
+          return true;
+        }
+
+        var canvas = intro.querySelector('canvas'), word = intro.querySelector('b');
+
+        // Same camera as the concept: 30° field of view, set back far enough that the bars
+        // (about 3.4 units wide) span at most 55% of a narrow screen.
+        function view() {
+          var w = innerWidth, h = innerHeight, focal = (h / 2) / Math.tan(15 * Math.PI / 180);
+          var camZ = Math.max(13.5, (focal * 3.4) / (0.55 * w));
+          // The wordmark sits just under the bars' base (world y = -1.6).
+          word.style.top = (h / 2 + 1.85 * focal / camZ + Math.max(30, h * 0.045)) + 'px';
+          return { w: w, h: h, dpr: Math.min(window.devicePixelRatio || 1, 1.5), focal: focal, camZ: camZ };
+        }
+
+        // Fewer points on small screens and modest hardware; the look holds at any count.
+        var weak = (navigator.hardwareConcurrency || 4) <= 4 || (navigator.deviceMemory || 4) <= 4;
+        var n = innerWidth < 640 ? (weak ? 1800 : 2600) : (weak ? 2800 : 4200);
+        var opts = { n: n, view: view(), start: performance.timeOrigin + performance.now() };
+        var ctl = null;
+
+        var worker = null;
+        if (canvas.transferControlToOffscreen && window.Worker && window.OffscreenCanvas) {
+          try {
+            var src = 'var run = ' + runIntro.toString() + ';\n' +
+              'var ctl; onmessage = function (e) { var m = e.data;\n' +
+              '  if (m.type === "init") { if (!run(m.canvas, m.opts, function (c) { ctl = c; })) postMessage("fail"); }\n' +
+              '  else if (m.type === "resize" && ctl) ctl.resize(m.view);\n' +
+              '  else if (m.type === "stop" && ctl) ctl.stop();\n' +
+              '};';
+            worker = new Worker(URL.createObjectURL(new Blob([src], { type: 'text/javascript' })));
+            var off = canvas.transferControlToOffscreen();
+            worker.postMessage({ type: 'init', canvas: off, opts: opts }, [off]);
+            worker.onmessage = function (e) { if (e.data === 'fail') { worker.terminate(); skipNow(); } };
+            ctl = {
+              resize: function (v) { worker.postMessage({ type: 'resize', view: v }); },
+              stop: function () { worker.postMessage({ type: 'stop' }); setTimeout(function () { worker.terminate(); }, 50); },
+            };
+          } catch (e) { worker = null; }
+        }
+        if (!worker && !runIntro(canvas, opts, function (c) { ctl = c; })) return skip();
+        document.documentElement.classList.add('has-intro');
+        addEventListener('resize', function () { if (ctl) ctl.resize(view()); });
+
+        // Timeline (ms): gather until ~1900 and the word shows; at 2500 the word lifts away and
+        // the bars burst back out into a wide cloud. Only once that has played does the site
+        // come in (READY), and the intro fades over it.
+        var READY = 3450, leaving = false;
+        var resolveReady, ready = new Promise(function (res) { resolveReady = res; });
+        var timers = [
+          setTimeout(function () { resolveReady(); }, READY),
+          setTimeout(function () { intro.classList.add('is-word'); }, 1500),
+          setTimeout(function () { intro.classList.add('is-scatter'); }, 2500),
+        ];
+        function skipNow() { timers.forEach(clearTimeout); resolveReady(); leave(); }
+        function leave() {
+          if (leaving) return;
+          leaving = true;
+          intro.classList.add('is-scatter', 'is-leaving');
+          setTimeout(function () { if (ctl) ctl.stop(); done(); }, 850);
+        }
+        // leave() is called once the site has painted underneath (after the scatter).
+        window.__intro = { ready: ready, leave: leave };
+        // Safety net: never trap the visitor behind the intro if the app fails to load.
+        setTimeout(leave, 7000);
+      })();
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

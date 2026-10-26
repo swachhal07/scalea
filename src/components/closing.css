@@ -13,9 +13,11 @@
   fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round;
   vector-effect: non-scaling-stroke;
   stroke-dasharray: 26 600; stroke-dashoffset: 26;
-  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.9));
+  /* No drop-shadow here: a filter on a moving stroke re-rasterises the whole wiring SVG every frame. */
   animation: tl-flow 2.4s cubic-bezier(0.45, 0, 0.55, 1) infinite;
 }
+/* Loops sleep while the section is off screen. */
+.tl.is-idle *, .tl.is-idle *::before, .tl.is-idle *::after { animation-play-state: paused !important; }
 @keyframes tl-flow { from { stroke-dashoffset: 26; } to { stroke-dashoffset: -300; } }
 
 .tl-tool, .tl-out { position: absolute; translate: 0 -50%; }
@@ -104,28 +106,99 @@
   user-select: none;
 }
 .ft-bottom { display: flex; justify-content: space-between; gap: 20px; max-width: 1240px; margin: 20px auto 0; padding-top: 22px; border-top: 1px solid rgba(255, 255, 255, 0.08); font-size: 13px; color: rgba(255, 255, 255, 0.4); }
-.ft-bottom span:last-child { display: flex; gap: 22px; }
+.ft-bottom { align-items: center; }
+.ft-bottom > span:nth-child(2) { display: flex; gap: 22px; margin-left: auto; }
 .ft-bottom a:hover { color: #fff; }
 
 /* ---------- Responsive ---------- */
+.tl-fan, .tl-mob { display: none; }
+
 @media (max-width: 1023px) {
-  .tl-stage { height: auto; display: grid; gap: 12px; }
-  .tl-wires { display: none; }
-  .tl-tool, .tl-out, .tl-hub { position: relative; top: auto !important; left: auto; right: auto; translate: none; width: auto; }
-  .tl-hub { justify-self: center; margin: 24px 0 44px; order: 2; }
-  .tl-tool { order: 1; }
-  .tl-out { order: 3; }
+  /* Narrow screens: tools (2×2) funnel into the engine, which fans out to three outcome tiles */
+  .tl-stage { height: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tl-wires, .tl-out { display: none; }
+  .tl-tool, .tl-hub { position: relative; top: auto !important; left: auto; right: auto; translate: none; width: auto; }
+  .tl-tool { order: 1; gap: 10px; padding: 10px; border-radius: 14px; }
+  .tl-ico { width: 36px; height: 36px; border-radius: 10px; }
+  .tl-ico svg { width: 18px; height: 18px; }
+  .tl-tool b { font-size: 15px; }
+  .tl-tool small { font-size: 10px; letter-spacing: 0.1em; }
+
+  .tl-fan { display: block; grid-column: 1 / -1; width: 100%; height: 56px; overflow: visible; }
+  .tl-fan-in { order: 2; }
+  .tl-fan-out { order: 4; margin-top: 30px; }
+  .tl-fan .tl-pulse { stroke-dasharray: 22 400; stroke-dashoffset: 22; animation: tl-fall 2s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
+  @keyframes tl-fall { to { stroke-dashoffset: -140; } }
+
+  .tl-hub { order: 3; grid-column: 1 / -1; justify-self: center; width: 150px; height: 150px; margin: -4px 0 0; }
+  .tl-ring.r2 { inset: 20px; }
+  .tl-core { width: 88px; height: 88px; }
+  .tl-core svg { width: 36px; height: 36px; }
+
+  .tl-mob { order: 5; grid-column: 1 / -1; display: block; }
+  .tl-mob-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .tl-mob-tiles button {
+    height: 52px; border-radius: 14px;
+    font-size: 16px; font-weight: 700; letter-spacing: -0.02em; color: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.12);
+    transition: background 0.35s var(--ease), color 0.35s var(--ease), border-color 0.35s var(--ease);
+  }
+  .tl-mob-tiles button.is-on { background: #fff; border-color: #fff; color: #000; }
+  .tl-mob-detail {
+    min-height: 78px; margin-top: 8px; padding: 16px 18px;
+    border-radius: 14px;
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    font-size: 15px; line-height: 1.5; color: rgba(255, 255, 255, 0.75);
+  }
+  .tl-mob-detail span { display: block; animation: tl-in 0.45s var(--ease); }
+  @keyframes tl-in { from { opacity: 0; transform: translateY(6px); } }
   .ft-top { grid-template-columns: 1fr 1fr; }
   .ft-brand { grid-column: 1 / -1; }
 }
 @media (max-width: 639px) {
   .cta-actions { width: 100%; }
   .cta-actions a { flex: 1 1 100%; justify-content: center; }
-  .ft-top { grid-template-columns: 1fr; }
-  .ft-bottom { flex-direction: column; }
+
+  /* Footer: brand, then two link columns side by side, then contact as its own block */
+  .ft { padding-top: 56px; }
+  .ft-top { grid-template-columns: 1fr 1fr; gap: 40px 20px; }
+  .ft-brand { padding-bottom: 32px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+  .ft-col ul { gap: 11px; }
+  .ft-col a, .ft-col span { font-size: 14.5px; }
+  .ft-col:last-child {
+    grid-column: 1 / -1;
+    padding: 20px;
+    border-radius: 18px;
+    background: radial-gradient(120% 120% at 0% 0%, rgba(255, 255, 255, 0.06), transparent 60%), #0a0a0b;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+  }
+  .ft-col:last-child ul { justify-items: center; }
+  .ft-col:last-child b { margin-bottom: 14px; }
+  .ft-col:last-child li:first-child a { font-size: 19px; font-weight: 600; color: #fff; }
+  .ft-word { height: 30vw; margin-top: 44px; }
+  /* Copyright left, Privacy and Terms right, Back to top centred below */
+  /* Everything centred: back to top, then Privacy and Terms, then the copyright */
+  .ft-bottom { flex-direction: column; align-items: center; gap: 16px; padding-top: 26px; font-size: 12.5px; text-align: center; }
+  .ft-top-btn { order: -1; }
+  .ft-bottom > span:first-child { order: 1; }
+  .ft-bottom > span:nth-child(2) { margin-left: 0; gap: 22px; }
 }
+
+.ft-top-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 34px; padding: 0 14px;
+  border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.14);
+  font-size: 13px; color: rgba(255, 255, 255, 0.75);
+  transition: background 0.3s var(--ease), color 0.3s var(--ease);
+}
+.ft-top-btn i { font-style: normal; transition: transform 0.4s var(--ease); }
+.ft-top-btn:hover { background: #fff; color: #000; }
+.ft-top-btn:hover i { transform: translateY(-2px); }
 @media (prefers-reduced-motion: reduce) {
-  .tl-pulse, .tl-ring.r1, .tl-label i { animation: none; }
+  .tl-pulse, .tl-ring.r1, .tl-label i, .tl-mob-detail span { animation: none; }
+  .tl-fan .tl-pulse { animation: none; }
 }
 
 .ft .logo-tile svg { width: 22px; height: 22px; fill: #fff; }

@@ -4,8 +4,8 @@ import Row from '../howwework/Row.jsx';
 import DotField from '../howwework/DotField.jsx';
 
 const reveal = {
-  hidden: { opacity: 0, y: 24 },
-  show: (i = 0) => ({ opacity: 1, y: 0, transition: { duration: 1, delay: i * 0.08, ease: EASE } }),
+  hidden: { opacity: 0 },
+  show: (i = 0) => ({ opacity: 1, transition: { duration: 1, delay: i * 0.08, ease: EASE } }),
 };
 
 export default function HowWeWork() {

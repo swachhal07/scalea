@@ -1,30 +1,31 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { EASE } from '../lib.js';
+import { getLenis } from '../scroll.js';
+import Bars from './Bars.jsx';
 import DotField from '../howwework/DotField.jsx';
 import FlickeringGrid from './FlickeringGrid.jsx';
+import { SITE, SocialLinks, whatsappHref } from '../site.jsx';
 
 const COLS = [
   { k: 'Services', links: ['Web Development', 'Mobile Apps', 'UX & SEO Audits', 'Launch & ASO', 'SEO & Paid Ads', 'AI & GEO'] },
   { k: 'Company', links: ['About', 'Work', 'Process', 'Careers'] },
-  { k: 'Contact', links: ['hello@scalevia.com', 'Kathmandu, Nepal', 'Book a call'] },
+  { k: 'Contact', links: [SITE.email, SITE.phone, 'Kathmandu, Nepal', 'WhatsApp us'] },
 ];
 
-const SOCIAL = [
-  ['LinkedIn', 'M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.5h4V21H3zM9.5 9.5h3.8v1.6h.06c.53-1 1.83-2.06 3.77-2.06 4.03 0 4.77 2.65 4.77 6.1V21h-4v-5.2c0-1.24-.02-2.84-1.73-2.84-1.73 0-2 1.35-2 2.75V21h-4z'],
-  ['Instagram', 'M12 7.3a4.7 4.7 0 1 0 0 9.4 4.7 4.7 0 0 0 0-9.4Zm0 7.7a3 3 0 1 1 0-6 3 3 0 0 1 0 6Zm4.9-7.9a1.1 1.1 0 1 1 0-2.2 1.1 1.1 0 0 1 0 2.2ZM12 3.6c2.7 0 3 0 4.1.06 2.7.12 4 1.42 4.12 4.12.06 1.06.06 1.38.06 4.08s0 3.02-.06 4.08c-.12 2.7-1.42 4-4.12 4.12-1.06.06-1.38.06-4.1.06s-3.02 0-4.08-.06c-2.72-.12-4-1.43-4.12-4.12C3.74 15.02 3.73 14.7 3.73 12s0-3.02.06-4.08C3.9 5.2 5.2 3.9 7.9 3.78 8.98 3.62 9.3 3.6 12 3.6Z'],
-  ['X', 'M17.75 3h3.07l-6.7 7.66L22 21h-6.17l-4.83-6.32L5.47 21H2.4l7.17-8.2L2 3h6.33l4.37 5.78zm-1.08 16.16h1.7L7.4 4.74H5.57z'],
-];
 
-// Footer links resolve to the one page we have, the sections on it, or email.
+// Footer links resolve to a page, a section of the home page, email or WhatsApp.
 // Anything with no destination (the studio address) stays plain text.
 const HREFS = {
   Work: '/#work', Process: '/#process', About: '/#about',
-  'Book a call': '/start', 'Kathmandu, Nepal': null,
-  Careers: 'mailto:hello@scalevia.com?subject=Careers',
+  'Kathmandu, Nepal': null,
+  Careers: '/careers',
 };
 
 function hrefFor(label) {
   if (label.includes('@')) return `mailto:${label}`;
+  if (label === SITE.phone) return `tel:+${SITE.whatsapp}`;
+  if (label === 'WhatsApp us') return whatsappHref();
   return label in HREFS ? HREFS[label] : '/start';
 }
 
@@ -38,15 +39,35 @@ function Logo() {
   );
 }
 
+// Phones get a finer dot grid so the wordmark stays legible at small sizes.
+function useNarrow() {
+  const query = '(max-width: 639px)';
+  const [narrow, setNarrow] = useState(() => window.matchMedia(query).matches);
+  useEffect(() => {
+    const mq = window.matchMedia(query);
+    const sync = () => setNarrow(mq.matches);
+    mq.addEventListener('change', sync);
+    return () => mq.removeEventListener('change', sync);
+  }, []);
+  return narrow;
+}
+
+function toTop() {
+  const lenis = getLenis();
+  if (lenis) lenis.scrollTo(0);
+  else window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 export default function Closing() {
+  const narrow = useNarrow();
   return (
     <>
       <section className="cta" id="start">
         <DotField />
         <motion.div
           className="cta-inner"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 1.1, ease: EASE }}
         >
@@ -54,8 +75,8 @@ export default function Closing() {
           <h2>Let’s build what’s next.</h2>
           <p>Tell us what you’re building. We’ll reply within one working day with ideas, a plan and an honest estimate.</p>
           <div className="cta-actions">
-            <a href="/start" className="p-cta">Start a Project</a>
-            <a href="/start" className="cta-ghost">Book a 20-min call <span aria-hidden="true">→</span></a>
+            <a href="/start" className="p-cta"><Bars /><span className="p-cta-label">Start a Project</span></a>
+            <a href={whatsappHref()} className="cta-ghost" {...(SITE.whatsapp ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>Chat on WhatsApp <span aria-hidden="true">→</span></a>
           </div>
           <ul className="cta-points">
             <li>Free discovery call</li>
@@ -68,12 +89,10 @@ export default function Closing() {
       <footer className="ft">
         <div className="ft-top">
           <div className="ft-brand">
-            <a href="#top" className="logo"><span className="logo-tile"><Logo /></span><span>SCALEVIA</span></a>
+            <a href="#top" className="logo"><span className="logo-tile"><Logo /></span><span>SCALEA</span></a>
             <p>We build digital products and help businesses grow through technology, marketing and AI.</p>
             <ul className="ft-social">
-              {SOCIAL.map(([k, d]) => (
-                <li key={k}><a href="#" aria-label={k}><svg viewBox="0 0 24 24" aria-hidden="true"><path d={d} /></svg></a></li>
-              ))}
+              <SocialLinks />
             </ul>
           </div>
           {COLS.map((c) => (
@@ -82,7 +101,8 @@ export default function Closing() {
               <ul>
             {c.links.map((l) => {
               const href = hrefFor(l);
-              return <li key={l}>{href ? <a href={href}>{l}</a> : <span>{l}</span>}</li>;
+              const external = href?.startsWith('https://');
+              return <li key={l}>{href ? <a href={href} {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{l}</a> : <span>{l}</span>}</li>;
             })}
           </ul>
             </nav>
@@ -90,21 +110,22 @@ export default function Closing() {
         </div>
         <FlickeringGrid
           className="ft-word"
-          text="SCALEVIA"
+          text="SCALEA"
           fontSize={280}
           fontWeight={800}
           fitWidth={0.94}
           squareSize={2}
-          gridGap={3}
+          gridGap={narrow ? 1 : 3}
           flickerChance={0.12}
           maxOpacity={0.2}
-          textFloor={0.4}
+          textFloor={narrow ? 0.6 : 0.4}
           textGain={2.6}
           textOnly
         />
         <div className="ft-bottom">
-          <span>© {new Date().getFullYear()} Scalevia. All rights reserved.</span>
-          <span><a href="#">Privacy</a><a href="#">Terms</a></span>
+          <span>© {new Date().getFullYear()} Scalea. All rights reserved.</span>
+          <span><a href="/privacy">Privacy</a><a href="/terms">Terms</a></span>
+          <button type="button" className="ft-top-btn" onClick={toTop}>Back to top <i aria-hidden="true">↑</i></button>
         </div>
       </footer>
     </>

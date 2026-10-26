@@ -37,8 +37,15 @@
 .wk-text ul { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 30px; }
 .wk-text li { padding: 6px 12px; border-radius: 999px; font-size: 13px; color: rgba(255, 255, 255, 0.8); background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08); }
 .wk-link { align-self: flex-start; display: inline-flex; align-items: center; gap: 10px; height: 48px; padding: 0 20px; border-radius: 10px; background: #fff; color: #000; font-size: 15px; font-weight: 600; }
-.wk-link span { transition: transform 0.4s var(--ease); }
-.wk-link:hover span { transform: translateX(4px); }
+/* Hover: the arrow flies out to the top right and a fresh one slides in from the bottom left */
+.wk-arrow { position: relative; display: inline-block; overflow: hidden; width: 1em; height: 1.2em; line-height: 1.2em; text-align: center; }
+.wk-arrow i { position: absolute; inset: 0; font-style: normal; transition: transform 0.5s var(--ease); }
+.wk-arrow i + i { transform: translate(-110%, 110%); }
+.wk-link:hover .wk-arrow i:first-child { transform: translate(110%, -110%); }
+.wk-link:hover .wk-arrow i + i { transform: translate(0, 0); transition-delay: 0.08s; }
+@media (prefers-reduced-motion: reduce) {
+  .wk-arrow i { transition: none; }
+}
 
 /* Visual: screenshot, or a branded browser frame until one is supplied */
 .wk-shot { width: 100%; height: 100%; object-fit: cover; border-radius: 18px; }

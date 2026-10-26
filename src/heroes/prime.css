@@ -183,16 +183,34 @@
   margin-bottom: 24px;
 }
 .p-lede { max-width: 33em; font-size: clamp(16px, 1.3vw, 20px); line-height: 1.55; color: rgba(255, 255, 255, 0.62); margin-bottom: 36px; }
+/* Hover: six white bars rise left to right and the label flips to black */
 .p-cta {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
   display: inline-flex; align-items: center; justify-content: center;
   height: 58px; padding: 0 32px;
   border-radius: 10px;
-  background: #fff; color: #000;
+  border: 1px solid #fff;
+  background: #000; color: #fff;
   font-size: 17px; font-weight: 600;
-  box-shadow: 0 0 40px -6px rgba(255, 255, 255, 0.35);
-  transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
 }
-.p-cta:hover { transform: translateY(-1px); box-shadow: 0 0 50px -4px rgba(255, 255, 255, 0.5); }
+.p-cta-bars { position: absolute; inset: 0; display: flex; z-index: -1; }
+.p-cta-bars i {
+  flex: 1;
+  margin-right: -1px; /* hide hairline seams between bars */
+  background: #fff;
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 0.45s var(--ease);
+  transition-delay: calc(var(--i) * 35ms);
+}
+.p-cta:hover .p-cta-bars i { transform: scaleY(1); }
+.p-cta-label { transition: color 0.3s 0.12s; }
+.p-cta:hover .p-cta-label { color: #000; }
+@media (prefers-reduced-motion: reduce) {
+  .p-cta-bars i { transition: none; }
+}
 .p-note { display: inline-flex; align-items: center; gap: 8px; margin-top: 18px; font-size: 15px; color: rgba(255, 255, 255, 0.55); }
 .p-note:hover { color: #fff; }
 .p-note svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.2; stroke-linecap: round; }
@@ -304,10 +322,76 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 .nav-links { gap: 6px; }
-.nav-links a { padding: 16px 18px; border-radius: 12px; font-size: 16px; transition: background 0.3s var(--ease), color 0.3s var(--ease); }
-.nav-links a:hover { background: #161616; color: #fff; }
-.nav-cta { height: 58px; padding: 0 28px; border-radius: 10px; font-size: 17px; font-weight: 600; background: #fff; border-color: #fff; color: #000; }
-.nav-cta:hover { background: #fff; border-color: #fff; }
+.nav-links a { padding: 16px 18px; font-size: 16px; }
+.nav-links a:hover { color: #fff; }
+
+/* Link hover: the label rolls up and a copy rolls in from below */
+.roll {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  line-height: 1.25;
+}
+.roll > span,
+.roll::after {
+  display: block;
+  transition: transform 0.55s var(--ease);
+}
+.roll::after {
+  content: attr(data-text);
+  content: attr(data-text) / ''; /* keep the copy out of the accessible name */
+  position: absolute;
+  inset: 100% 0 auto 0;
+}
+.nav-links a:hover .roll > span,
+.nav-links a:hover .roll::after { transform: translateY(-100%); }
+
+/* CTA hover: black fill rises from the bottom, arrow loops out and back in */
+.nav-cta {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  height: 58px; padding: 0 28px; border-radius: 10px;
+  font-size: 17px; font-weight: 600;
+  background: #fff; border-color: #fff; color: #000;
+  transition: color 0.5s var(--ease);
+}
+.nav-cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: #000;
+  border-radius: inherit;
+  transform: translateY(101%);
+  transition: transform 0.55s var(--ease);
+}
+.nav-cta:hover { background: #fff; border-color: #fff; color: #fff; }
+.nav-cta:hover::before { transform: translateY(0); }
+.nav-cta-arrow {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  width: 1em;
+  line-height: 1;
+}
+.nav-cta-arrow > span {
+  display: block;
+  transition: transform 0.55s var(--ease);
+}
+.nav-cta-arrow > span + span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateX(-120%);
+}
+.nav-cta:hover .nav-cta-arrow > span:first-child { transform: translateX(120%); }
+.nav-cta:hover .nav-cta-arrow > span + span { transform: translateX(0); }
+
+@media (prefers-reduced-motion: reduce) {
+  .roll > span, .roll::after, .nav-cta::before, .nav-cta-arrow > span { transition: none; }
+}
 
 /* Hero shell and the client-strip scroll (shared with the hero above) */
 .hx {
@@ -333,9 +417,6 @@
 @media (max-width: 639px) {
   .nav { top: 12px; height: 64px; padding: 0 8px 0 10px; border-radius: 14px; }
   .logo-tile { width: 40px; height: 40px; border-radius: 10px; }
-  .nav-toggle { width: 46px; height: 46px; border-radius: 10px; background: #fff; border-color: #fff; }
-  .nav-toggle span { background: #000; }
-  .nav-sheet { top: 74px; left: 0; right: 0; }
   .hx-prime { padding-top: 140px; min-height: auto; }
   .p-scene { display: none; }
   .p-badge { font-size: 13px; height: 40px; gap: 8px; }
@@ -406,3 +487,22 @@
 
 /* Pause the client strip while the pointer is over it */
 .p-marquee:hover ul { animation-play-state: paused; }
+
+/* Hero CTA word cycle: letters of the next word rise in one after another, softly
+   unblurring, while the last word's letters drift up and fade */
+.p-cycle { display: inline-grid; vertical-align: top; text-align: left; transition: width 0.9s var(--ease); }
+.p-cycle > span { grid-area: 1 / 1; justify-self: start; white-space: nowrap; }
+.p-cycle i {
+  display: inline-block;
+  font-style: normal;
+  opacity: 0;
+  filter: blur(6px);
+  transform: translateY(0.45em);
+  transition: opacity 0.7s var(--ease), transform 0.9s var(--ease), filter 0.7s var(--ease);
+  transition-delay: calc(var(--i) * 45ms);
+}
+.p-cycle > span.is-on i { opacity: 1; filter: blur(0); transform: none; transition-delay: calc(0.25s + var(--i) * 45ms); }
+.p-cycle > span.is-out i { opacity: 0; filter: blur(6px); transform: translateY(-0.45em); transition-duration: 0.5s; transition-delay: calc(var(--i) * 25ms); }
+@media (prefers-reduced-motion: reduce) {
+  .p-cycle i { transition: none; }
+}

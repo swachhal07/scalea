@@ -46,6 +46,6 @@ export const SERVICES = [
 ];
 
 export const reveal = {
-  hidden: { opacity: 0, y: 30 },
-  show: (i = 0) => ({ opacity: 1, y: 0, transition: { duration: 1.1, delay: i * 0.08, ease: EASE } }),
+  hidden: { opacity: 0 },
+  show: (i = 0) => ({ opacity: 1, transition: { duration: 1.1, delay: i * 0.08, ease: EASE } }),
 };
