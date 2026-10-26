@@ -68,7 +68,7 @@
         var done = function () { intro.remove(); document.documentElement.classList.remove('has-intro'); };
         var skip = function () {
           done();
-          window.__intro = { ready: Promise.resolve(), leave: function () {} };
+          window.__intro = { ready: Promise.resolve(), leave: function () {}, skipped: true };
         };
         // Plays once per tab, on the home page: skipped on later visits and reloads, when
         // arriving straight on another page, and for people who prefer less motion.

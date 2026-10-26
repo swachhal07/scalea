@@ -19,6 +19,11 @@ const reveal = {
   hidden: { opacity: 0, transform: 'translateY(20px)' },
   show: (i = 0) => ({ opacity: 1, transform: 'translateY(0px)', transition: { duration: 0.9, delay: i * 0.08, ease: EASE } }),
 };
+// Below the hero, boxes only fade in: on a phone, a slide up reads as the layout jumping.
+const fade = {
+  hidden: { opacity: 0 },
+  show: (i = 0) => ({ opacity: 1, transition: { duration: 0.8, delay: i * 0.06, ease: EASE } }),
+};
 const inView = { initial: 'hidden', whileInView: 'show', viewport: { once: true, amount: 0.2 } };
 
 // Three hero cards per service, near to far; widths in em, as on the home hero.
@@ -44,7 +49,7 @@ function track(e) {
 
 function Head({ k, title, children }) {
   return (
-    <motion.header className="sv-head" variants={reveal}>
+    <motion.header className="sv-head" variants={fade}>
       <span className="sv-eyebrow"><i />{k}</span>
       <h2>{title}</h2>
       {children && <p>{children}</p>}
@@ -94,7 +99,7 @@ export default function ServicePage({ route }) {
           <Head k="What’s included" title={<span id="sv-included">Everything in {s.name.toLowerCase()}.</span>} />
           <ol className="sv-grid">
             {s.includes.map(([t, d], i) => (
-              <motion.li key={t} className="sv-card" variants={reveal} custom={i % 3} onMouseMove={track}>
+              <motion.li key={t} className="sv-card" variants={fade} custom={i % 3} onMouseMove={track}>
                 <span className="sv-n">{String(i + 1).padStart(2, '0')}</span>
                 <h3>{t}</h3>
                 <p>{d}</p>
@@ -110,7 +115,7 @@ export default function ServicePage({ route }) {
           </Head>
           <ol className="sv-steps">
             {STEPS.map((st, i) => (
-              <motion.li key={st.k} variants={reveal} custom={i}>
+              <motion.li key={st.k} variants={fade} custom={i}>
                 <span className="sv-step-n">{String(i + 1).padStart(2, '0')}</span>
                 <i className="sv-step-node" aria-hidden="true" />
                 <h3>{st.k}</h3>
@@ -121,12 +126,12 @@ export default function ServicePage({ route }) {
         </motion.section>
 
         <motion.section className="sv-section sv-pair" {...inView}>
-          <motion.div className="sv-card sv-fit" variants={reveal} onMouseMove={track}>
+          <motion.div className="sv-card sv-fit" variants={fade} onMouseMove={track}>
             <span className="sv-eyebrow"><i />Who it’s for</span>
             <ul>{s.fit.map((f) => <li key={f}>{f}</li>)}</ul>
           </motion.div>
           {work.length > 0 ? (
-            <motion.div className="sv-card sv-clients" variants={reveal} custom={1} onMouseMove={track}>
+            <motion.div className="sv-card sv-clients" variants={fade} custom={1} onMouseMove={track}>
               <span className="sv-eyebrow"><i />Related work</span>
               <ul>
                 {work.map((c) => (
@@ -140,7 +145,7 @@ export default function ServicePage({ route }) {
               </ul>
             </motion.div>
           ) : (
-            <motion.div className="sv-card sv-clients" variants={reveal} custom={1} onMouseMove={track}>
+            <motion.div className="sv-card sv-clients" variants={fade} custom={1} onMouseMove={track}>
               <span className="sv-eyebrow"><i />Tools we use</span>
               <ul>
                 {TOOLS.map((t) => (
@@ -158,14 +163,14 @@ export default function ServicePage({ route }) {
         </motion.section>
 
         <motion.section className="sv-section sv-faq" {...inView} aria-labelledby="sv-faq">
-          <motion.div className="sv-faq-side" variants={reveal}>
+          <motion.div className="sv-faq-side" variants={fade}>
             <span className="sv-eyebrow"><i />Questions</span>
             <h2 id="sv-faq">Common questions.</h2>
             <p>Something else? <a href={whatsappHref()} target="_blank" rel="noopener noreferrer">Ask us on WhatsApp</a> and a real person replies the same working day.</p>
           </motion.div>
           <div className="sv-faq-list">
             {s.faq.map(([q, a], i) => (
-              <motion.article key={q} variants={reveal} custom={i}>
+              <motion.article key={q} variants={fade} custom={i}>
                 <h3>{q}</h3>
                 <p>{a}</p>
               </motion.article>
@@ -177,7 +182,7 @@ export default function ServicePage({ route }) {
           <Head k="More services" title={<span id="sv-more">One team for the whole journey.</span>} />
           <ul className="sv-more">
             {others.map((x, i) => (
-              <motion.li key={x.slug} variants={reveal} custom={i % 3}>
+              <motion.li key={x.slug} variants={fade} custom={i % 3}>
                 <a href={servicePath(x)} className="sv-card" onMouseMove={track}>
                   <b>{x.label}</b>
                   <span>{x.h1}</span>

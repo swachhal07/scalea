@@ -136,7 +136,7 @@
 /* ---------- Values ---------- */
 .ab-values { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; max-width: 1240px; margin: 16px auto 0; }
 .ab-values li { padding: 30px; transition: transform 0.5s var(--ease); }
-.ab-values li:hover { transform: translateY(-3px); }
+@media (hover: hover) { .ab-values li:hover { transform: translateY(-3px); } }
 .ab-values b { display: block; margin: 26px 0 10px; font-size: 22px; font-weight: 600; letter-spacing: -0.025em; color: #fff; }
 .ab-values p { font-size: 15px; line-height: 1.6; color: rgba(255, 255, 255, 0.58); }
 

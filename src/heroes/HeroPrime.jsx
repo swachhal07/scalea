@@ -4,6 +4,7 @@ import { EASE } from '../lib.js';
 import Bars from '../components/Bars.jsx';
 import CycleWord from '../components/CycleWord.jsx';
 import { useHero } from './shared.jsx';
+import { useIntroDone } from '../intro.js';
 import {
   WebCard, MobileCard, UXCard, AuditCard, SeoCard, AdsCard, GeoCard, ChartCard,
 } from './EdgeCards.jsx';
@@ -48,19 +49,20 @@ const CYCLE = [
   { w: 'Scaling', ms: 4500 },
 ];
 
-const rise = (delay) => ({
+// Entrance: held at the start until the intro is done (go), then rises in.
+const rise = (delay, go) => ({
   initial: { opacity: 0, transform: 'translateY(16px)' },
-  animate: { opacity: 1, transform: 'translateY(0px)' },
+  animate: go ? { opacity: 1, transform: 'translateY(0px)' } : undefined,
   transition: { duration: 1.1, delay, ease: EASE },
 });
 
-function Edge({ c, i, progress }) {
+function Edge({ c, i, progress, go }) {
   const y = useTransform(progress, [0, 1], [0, -c.depth * 160]);
   return (
     <motion.div className={`p-card ${c.cls}`} style={{ y, width: `${c.w}em` }}>
       <motion.div
         initial={{ opacity: 0, transform: 'translateY(30px)' }}
-        animate={{ opacity: 1, transform: 'translateY(0px)' }}
+        animate={go ? { opacity: 1, transform: 'translateY(0px)' } : undefined}
         transition={{ duration: 1.6, delay: 0.5 + i * 0.08, ease: EASE }}
       >
         <div className="p-float"><c.C /></div>
@@ -80,6 +82,7 @@ function Logo() {
 }
 
 export default function HeroPrime() {
+  const go = useIntroDone();
   const ref = useRef(null);
   const { progress, idle } = useHero(ref);
   // Pointer parallax: the whole card field turns a few degrees toward the cursor.
@@ -105,7 +108,7 @@ export default function HeroPrime() {
 
       <div className="p-scene" aria-hidden="true">
         <motion.div className="p-cards" style={{ rotateX: rotX, rotateY: rotY }}>
-          {CARDS.map((c, i) => <Edge key={c.cls} c={c} i={i} progress={progress} />)}
+          {CARDS.map((c, i) => <Edge key={c.cls} c={c} i={i} progress={progress} go={go} />)}
         </motion.div>
       </div>
       <div className="p-vignette" aria-hidden="true" />
@@ -114,29 +117,29 @@ export default function HeroPrime() {
       <div className="p-blur p-blur-bottom" aria-hidden="true" />
 
       <motion.div className="p-copy" style={{ y: copyY, opacity: copyOpacity }}>
-        <motion.a href="#services" className="p-badge" {...rise(0.1)}>
+        <motion.a href="#services" className="p-badge" {...rise(0.1, go)}>
           <span className="p-badge-logo"><Logo /></span>
           {HERO.badge}
           <span className="p-badge-arrow" aria-hidden="true">→</span>
         </motion.a>
         {/* The headline is the LCP element: it starts faint rather than invisible
             so it counts as painted on the first frame, then rises in with the rest. */}
-        <motion.h1 className="p-title" {...rise(0.2)} initial={{ opacity: 0.15, transform: 'translateY(16px)' }}>
+        <motion.h1 className="p-title" {...rise(0.2, go)} initial={{ opacity: 0.15, transform: 'translateY(16px)' }}>
           {HERO.title[0]}<br />{HERO.title[1]}
         </motion.h1>
-        <motion.p className="p-lede" {...rise(0.32)}>
+        <motion.p className="p-lede" {...rise(0.32, go)}>
           {HERO.lede}
         </motion.p>
-        <motion.a href="/start" className="p-cta" {...rise(0.44)}>
+        <motion.a href="/start" className="p-cta" {...rise(0.44, go)}>
           <Bars /><span className="sr-only">Start a project</span><span className="p-cta-label" aria-hidden="true">Start <CycleWord words={CYCLE} /></span>
         </motion.a>
-        <motion.a href="#services" className="p-note" {...rise(0.54)}>
+        <motion.a href="#services" className="p-note" {...rise(0.54, go)}>
           <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" /><path d="M8 7.2v3.6M8 5.2v.1" /></svg>
           Or explore our services
         </motion.a>
       </motion.div>
 
-      <motion.div className="p-trust" {...rise(0.8)}>
+      <motion.div className="p-trust" {...rise(0.8, go)}>
         <p>{HERO.trust}</p>
         <div className="p-marquee">
           {[0, 1].map((dup) => (

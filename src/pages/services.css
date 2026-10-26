@@ -81,8 +81,6 @@
 
 /* ---------- Sections ---------- */
 .sv-section { max-width: 1240px; margin: 0 auto; padding: clamp(56px, 7vw, 100px) 0; border-top: 1px solid rgba(255, 255, 255, 0.07); }
-/* Sections below the fold skip layout and paint until they near the screen */
-.sv-section { content-visibility: auto; contain-intrinsic-size: auto 640px; }
 .sv-head { max-width: 760px; margin-bottom: clamp(32px, 4vw, 52px); }
 .sv-eyebrow { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 18px; font-size: 15px; font-weight: 500; color: rgba(255, 255, 255, 0.7); }
 .sv-eyebrow i { width: 8px; height: 8px; border-radius: 2px; background: #fff; box-shadow: 0 0 10px rgba(255, 255, 255, 0.8); }
@@ -159,7 +157,7 @@
 /* Other services */
 .sv-more { list-style: none; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
 .sv-more a { display: flex; flex-direction: column; gap: 10px; height: 100%; padding: 22px 22px 54px; }
-.sv-more a:hover { transform: translateY(-2px); }
+@media (hover: hover) { .sv-more a:hover { transform: translateY(-2px); } }
 .sv-more b { font-size: 17px; font-weight: 600; color: #fff; }
 .sv-more span { font-size: 13.5px; line-height: 1.5; color: rgba(255, 255, 255, 0.55); }
 .sv-more i { position: absolute; left: 22px; bottom: 20px; font-style: normal; color: #fff; transition: transform 0.4s var(--ease); }
@@ -184,7 +182,8 @@
   .sv-hero { padding-top: 120px; }
   .sv-actions .p-cta, .sv-actions .cta-ghost { width: 100%; justify-content: center; }
   .sv-grid { grid-template-columns: 1fr; }
-  .sv-grid li, .sv-grid li:nth-child(-n + 2):nth-last-child(n + 4) { grid-column: auto; padding: 24px; }
+  .sv-grid li, .sv-grid li:nth-child(-n + 2):nth-last-child(n + 4),
+  .sv-grid li:first-child:nth-last-child(4), .sv-grid li:first-child:nth-last-child(4) ~ li { grid-column: auto; padding: 24px; }
   .sv-n { margin-bottom: 24px; }
   .sv-pair > .sv-card { padding: 24px; }
   .sv-more { grid-template-columns: 1fr; }

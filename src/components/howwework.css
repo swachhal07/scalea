@@ -60,7 +60,8 @@
   transition: opacity 0.4s var(--ease);
   pointer-events: none;
 }
-.hw-glass:hover { transform: translateY(-6px); border-color: rgba(255, 255, 255, 0.2); }
+.hw-glass:hover { border-color: rgba(255, 255, 255, 0.2); }
+@media (hover: hover) { .hw-glass:hover { transform: translateY(-6px); } }
 .hw-glass:hover::before, .hw-glass:hover::after { opacity: 1; }
 
 .hw-row-node { position: absolute; left: 50%; top: -41px; width: 13px; height: 13px; margin-left: -6.5px; border-radius: 50%; background: #000; border: 2px solid #fff; box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.06), 0 0 14px rgba(255, 255, 255, 0.6); }

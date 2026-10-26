@@ -4,6 +4,7 @@ import { EASE } from '../lib.js';
 import { lockScroll } from '../scroll.js';
 import Bars from './Bars.jsx';
 import { SITE, SocialLinks } from '../site.jsx';
+import { useIntroDone } from '../intro.js';
 
 // Mobile menu: the panel fades in, then its rows rise in one after another.
 const sheet = {
@@ -41,6 +42,7 @@ export function Logo() {
 }
 
 export default function Nav() {
+  const go = useIntroDone();
   const [open, setOpen] = useState(false);
 
   // While the menu is open the page holds still; Escape or widening past phone size closes it.
@@ -63,7 +65,7 @@ export default function Nav() {
     <motion.header
       className="nav"
       initial={{ opacity: 0, y: -12 }}
-      animate={{ opacity: 1, y: 0 }}
+      animate={go ? { opacity: 1, y: 0 } : undefined}
       transition={{ duration: 1.2, delay: 0.2, ease: EASE }}
     >
       <Logo />

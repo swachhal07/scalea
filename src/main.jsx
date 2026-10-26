@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { startTransition } from 'react';
 import ReactDOM from 'react-dom/client';
 import { MotionConfig } from 'framer-motion';
 import App from './App.jsx';
@@ -19,25 +19,28 @@ import './pages/services.css';
 // doesn't restore an old scroll position on reload or back and forward.
 if ('scrollRestoration' in window.history) window.history.scrollRestoration = 'manual';
 
-// The intro in index.html plays first. The site renders once the particles have formed
-// the logo, so its entrance animations play in view; the intro fades out after that paint.
+// The site renders at once, underneath the intro in index.html, as an interruptible
+// transition: the work is sliced into short tasks, so the intro's timers stay on time and
+// none of it is left for the hand-over. Entrance animations wait for the intro to finish
+// (useIntroDone in intro.js); the intro then fades over a page that is already built.
 const intro = window.__intro;
+const root = ReactDOM.createRoot(document.getElementById('root'));
 
-function mount() {
-  ReactDOM.createRoot(document.getElementById('root')).render(
+startTransition(() => {
+  root.render(
     <React.StrictMode>
       <MotionConfig reducedMotion="user">
         <App />
       </MotionConfig>
     </React.StrictMode>
   );
-  // Fade the intro once the site has painted (two frames), or after 150ms if frames are
-  // paused, as in a background tab. leave() only runs once.
-  if (intro) {
+});
+
+// Fade the intro once it has played and the site has painted under it (two frames), or
+// after 150ms if frames are paused, as in a background tab. leave() only runs once.
+if (intro) {
+  intro.ready.then(() => {
     requestAnimationFrame(() => requestAnimationFrame(() => intro.leave()));
     setTimeout(() => intro.leave(), 150);
-  }
+  });
 }
-
-if (intro) intro.ready.then(mount);
-else mount();
