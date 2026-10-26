@@ -22,7 +22,7 @@ const CARDS = [
 
 // Client logos (white versions made by scripts/mono-logos.ps1), each fitted into the same box.
 // No logo file → typeset wordmark in that box.
-const BRANDS = [
+export const BRANDS = [
   { id: 'mahindra', main: 'Mahindra', logo: '/brands/mahindra.png' },
   { id: 'revolt', main: 'Revolt', logo: '/brands/revolt.png' },
   { id: 'deere', main: 'John Deere', logo: '/brands/john-deere.png' },
@@ -32,6 +32,14 @@ const BRANDS = [
   { id: 'dugar', main: 'MV Dugar Group', logo: '/brands/mv-dugar.png' },
   { id: 'manokamana', main: 'Manokamana Hire Purchase', logo: '/brands/manokamana.png' },
 ];
+
+// Hero copy, shared with the markdown version of the page (src/md/registry.jsx).
+export const HERO = {
+  badge: 'Build, launch and scale end-to-end',
+  title: ['Build. Launch. Scale.', 'From idea to growth.'],
+  lede: 'We build digital products, improve digital experiences, and help businesses grow through technology, marketing and AI.',
+  trust: 'Trusted by leading Nepali brands across automotive, agriculture and finance.',
+};
 
 // Hero CTA: "Start …" walks through the journey, holding longest on Scaling, then repeats.
 const CYCLE = [
@@ -108,17 +116,16 @@ export default function HeroPrime() {
       <motion.div className="p-copy" style={{ y: copyY, opacity: copyOpacity }}>
         <motion.a href="#services" className="p-badge" {...rise(0.1)}>
           <span className="p-badge-logo"><Logo /></span>
-          Build, launch and scale end-to-end
+          {HERO.badge}
           <span className="p-badge-arrow" aria-hidden="true">→</span>
         </motion.a>
         {/* The headline is the LCP element: it starts faint rather than invisible
             so it counts as painted on the first frame, then rises in with the rest. */}
         <motion.h1 className="p-title" {...rise(0.2)} initial={{ opacity: 0.15, transform: 'translateY(16px)' }}>
-          Build. Launch. Scale.<br />From idea to growth.
+          {HERO.title[0]}<br />{HERO.title[1]}
         </motion.h1>
         <motion.p className="p-lede" {...rise(0.32)}>
-          We build digital products, improve digital experiences, and help businesses grow
-          through technology, marketing and AI.
+          {HERO.lede}
         </motion.p>
         <motion.a href="/start" className="p-cta" aria-label="Start scaling" {...rise(0.44)}>
           <Bars /><span className="p-cta-label" aria-hidden="true">Start <CycleWord words={CYCLE} /></span>
@@ -130,7 +137,7 @@ export default function HeroPrime() {
       </motion.div>
 
       <motion.div className="p-trust" {...rise(0.8)}>
-        <p>Trusted by leading Nepali brands across automotive, agriculture and finance.</p>
+        <p>{HERO.trust}</p>
         <div className="p-marquee">
           {[0, 1].map((dup) => (
             <ul key={dup} aria-hidden={dup === 1} aria-label={dup === 0 ? 'Clients' : undefined}>

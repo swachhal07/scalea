@@ -5,19 +5,26 @@ import Bars from '../components/Bars.jsx';
 import { Field, Group, isEmail } from './Field.jsx';
 import { SITE, whatsappHref } from '../site.jsx';
 
-const SERVICES = [
+export const SERVICES = [
   'Website', 'Web app', 'Mobile app', 'UX & SEO audit', 'SEO & paid ads', 'AI & automation',
 ];
-const BUDGETS = ['Under $5k', '$5k – $15k', '$15k – $50k', '$50k+', 'Not sure yet'];
-const TIMELINES = ['As soon as possible', 'In the next 1–3 months', 'In 3–6 months', 'Just exploring'];
+export const BUDGETS = ['Under $5k', '$5k – $15k', '$15k – $50k', '$50k+', 'Not sure yet'];
+export const TIMELINES = ['As soon as possible', 'In the next 1–3 months', 'In 3–6 months', 'Just exploring'];
 
-const STEPS = [
+export const COPY = {
+  title: 'Tell us what you’re building.',
+  lede: 'Fill this in and you’ll hear back within one working day with first thoughts, a plan and an honest estimate. No sales sequence, no obligation.',
+  studio: 'Kathmandu, Nepal',
+  reply: 'Within 24 hours',
+};
+
+export const STEPS = [
   ['01', 'We read your brief', 'A real person, same working day. No ticket queue.'],
   ['02', 'A 20-minute call', 'We ask what we still need to know and tell you what we would do.'],
   ['03', 'A fixed-scope proposal', 'Scope, timeline and price in writing within three working days.'],
 ];
 
-const INBOX = 'hello@scalea.com';
+const INBOX = SITE.email;
 
 const reveal = {
   hidden: { opacity: 0, transform: 'translateY(24px)' },
@@ -84,10 +91,9 @@ export default function StartProject() {
       <motion.div className="sp-grid" initial="hidden" animate="show">
         <aside className="sp-aside">
           <motion.span className="sp-eyebrow" variants={reveal}><i />Start a project</motion.span>
-          <motion.h1 variants={reveal} custom={1}>Tell us what you’re building.</motion.h1>
+          <motion.h1 variants={reveal} custom={1}>{COPY.title}</motion.h1>
           <motion.p className="sp-lede" variants={reveal} custom={2}>
-            Fill this in and you’ll hear back within one working day with first thoughts, a plan
-            and an honest estimate. No sales sequence, no obligation.
+            {COPY.lede}
           </motion.p>
 
           <motion.ol className="sp-steps" variants={reveal} custom={3}>
@@ -105,8 +111,8 @@ export default function StartProject() {
           <motion.dl className="sp-meta" variants={reveal} custom={4}>
             <div><dt>Email</dt><dd><a href={`mailto:${INBOX}`}>{INBOX}</a></dd></div>
             <div><dt>Phone / WhatsApp</dt><dd><a href={whatsappHref()} target="_blank" rel="noopener noreferrer">{SITE.phone}</a></dd></div>
-            <div><dt>Studio</dt><dd>Kathmandu, Nepal</dd></div>
-            <div><dt>Reply time</dt><dd>Within 24 hours</dd></div>
+            <div><dt>Studio</dt><dd>{COPY.studio}</dd></div>
+            <div><dt>Reply time</dt><dd>{COPY.reply}</dd></div>
           </motion.dl>
         </aside>
 

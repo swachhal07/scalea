@@ -7,6 +7,12 @@ import DotField from '../howwework/DotField.jsx';
 import FlickeringGrid from './FlickeringGrid.jsx';
 import { SITE, SocialLinks, whatsappHref } from '../site.jsx';
 
+export const COPY = {
+  heading: 'Let’s build what’s next.',
+  intro: 'Tell us what you’re building. We’ll reply within one working day with ideas, a plan and an honest estimate.',
+  points: ['Free discovery call', 'Fixed-scope proposals', 'Reply within 24 hours'],
+};
+
 const COLS = [
   { k: 'Services', links: ['Web Development', 'Mobile Apps', 'UX & SEO Audits', 'Launch & ASO', 'SEO & Paid Ads', 'AI & GEO'] },
   { k: 'Company', links: ['About', 'Work', 'Process', 'Careers'] },
@@ -42,7 +48,7 @@ function Logo() {
 // Phones get a finer dot grid so the wordmark stays legible at small sizes.
 function useNarrow() {
   const query = '(max-width: 639px)';
-  const [narrow, setNarrow] = useState(() => window.matchMedia(query).matches);
+  const [narrow, setNarrow] = useState(() => !import.meta.env.SSR && window.matchMedia(query).matches);
   useEffect(() => {
     const mq = window.matchMedia(query);
     const sync = () => setNarrow(mq.matches);
@@ -72,16 +78,14 @@ export default function Closing() {
           transition={{ duration: 1.1, ease: EASE }}
         >
           <span className="cta-mark"><Logo /></span>
-          <h2>Let’s build what’s next.</h2>
-          <p>Tell us what you’re building. We’ll reply within one working day with ideas, a plan and an honest estimate.</p>
+          <h2>{COPY.heading}</h2>
+          <p>{COPY.intro}</p>
           <div className="cta-actions">
             <a href="/start" className="p-cta"><Bars /><span className="p-cta-label">Start a Project</span></a>
             <a href={whatsappHref()} className="cta-ghost" {...(SITE.whatsapp ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>Chat on WhatsApp <span aria-hidden="true">→</span></a>
           </div>
           <ul className="cta-points">
-            <li>Free discovery call</li>
-            <li>Fixed-scope proposals</li>
-            <li>Reply within 24 hours</li>
+            {COPY.points.map((p) => <li key={p}>{p}</li>)}
           </ul>
         </motion.div>
       </section>

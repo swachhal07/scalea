@@ -27,7 +27,7 @@ const LINKS = [
 
 export function Logo() {
   return (
-    <a href="#" className="logo" aria-label="Scalea home">
+    <a href="/#top" className="logo" aria-label="Scalea home">
       <span className="logo-tile">
         <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
           <rect x="2" y="14" width="5" height="8" rx="1.2" fill="currentColor" opacity="0.35" />

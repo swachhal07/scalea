@@ -1,7 +1,7 @@
 // Contact details and links used across the site. Edit them here, once.
 
 export const SITE = {
-  email: 'hello@scalea.com',
+  email: 'scalea@gmail.com',
   // WhatsApp number in international format, digits only (Nepal: 977 + number), e.g. '9779800000000'.
   whatsapp: '9779748759519',
   // How the number is shown on the site.

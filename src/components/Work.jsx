@@ -3,7 +3,12 @@ import { EASE } from '../lib.js';
 
 // Case studies. Copy is placeholder until real project details are supplied;
 // `shot` is an optional screenshot path in /public/work/ that replaces the logo panel.
-const CASES = [
+export const COPY = {
+  heading: 'Built for brands people trust.',
+  intro: 'A few of the companies we’ve helped build, launch and grow online.',
+};
+
+export const CASES = [
   {
     id: 'mahindra',
     url: 'https://www.mahindra.info.np/',
@@ -87,10 +92,10 @@ export default function Work() {
       <motion.header className="wk-head" initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.5 }}>
         <div>
           <motion.span className="wk-eyebrow" variants={reveal}><i />Selected work</motion.span>
-          <motion.h2 variants={reveal} custom={1}>Built for brands people trust.</motion.h2>
+          <motion.h2 variants={reveal} custom={1}>{COPY.heading}</motion.h2>
         </div>
         <motion.p variants={reveal} custom={2}>
-          A few of the companies we’ve helped build, launch and grow online.
+          {COPY.intro}
         </motion.p>
       </motion.header>
 

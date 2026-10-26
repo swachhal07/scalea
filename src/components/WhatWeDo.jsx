@@ -9,7 +9,12 @@ import Bento from '../whatwedo/Bento.jsx';
 // From the section's top entering at the bottom of the viewport to it reaching 25% down.
 const HORIZON_RANGE = (top, height, vh) => [top - vh, top - vh * 0.25];
 
-const HEADING = 'Everything you need to grow digitally.'.split(' ');
+export const COPY = {
+  heading: 'Everything you need to grow digitally.',
+  intro: 'One team from first build to steady growth. Pick a single service or bring us in for the whole journey.',
+  cta: 'Not sure where to start? We’ll map the right mix for your business.',
+};
+const HEADING = COPY.heading.split(' ');
 
 const word = {
   hidden: { opacity: 0 },
@@ -38,14 +43,14 @@ export default function WhatWeDo() {
           ))}
         </h2>
         <motion.p variants={reveal} custom={4}>
-          One team from first build to steady growth. Pick a single service or bring us in for the whole journey.
+          {COPY.intro}
         </motion.p>
       </motion.header>
 
       <Bento />
 
       <motion.div className="wwd-cta" variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.8 }}>
-        <p>Not sure where to start? We’ll map the right mix for your business.</p>
+        <p>{COPY.cta}</p>
         <a href="/start" className="p-cta"><Bars /><span className="p-cta-label">Start a Project</span></a>
       </motion.div>
 

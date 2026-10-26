@@ -14,8 +14,14 @@ export function navigate(to) {
   window.dispatchEvent(new PopStateEvent('popstate'));
 }
 
+// The build-time render (src/entry-server.jsx) has no window, so it says which page it's on.
+let serverPath = '/';
+export function setServerPath(path) {
+  serverPath = path;
+}
+
 export function useRoute() {
-  const [path, setPath] = useState(() => window.location.pathname);
+  const [path, setPath] = useState(() => (import.meta.env.SSR ? serverPath : window.location.pathname));
 
   useEffect(() => {
     const sync = () => setPath(window.location.pathname);

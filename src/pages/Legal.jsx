@@ -4,7 +4,7 @@ import { SITE } from '../site.jsx';
 
 // Privacy policy and terms of use, sharing one long-form reading layout.
 
-const UPDATED = '26 October 2026';
+export const UPDATED = '26 October 2026';
 
 const reveal = {
   hidden: { opacity: 0, transform: 'translateY(16px)' },
@@ -13,11 +13,11 @@ const reveal = {
 
 const Mail = () => <a href={`mailto:${SITE.email}`}>{SITE.email}</a>;
 
-const PRIVACY = [
+export const PRIVACY = [
   {
     h: 'Who we are',
     p: [
-      <>Scalea is a digital studio based in Kathmandu, Nepal. This policy explains what we collect when you use scalea.com or get in touch with us, and what we do with it. If anything here is unclear, write to <Mail />.</>,
+      <>Scalea is a digital studio based in Kathmandu, Nepal. This policy explains what we collect when you use this website or get in touch with us, and what we do with it. If anything here is unclear, write to <Mail />.</>,
     ],
   },
   {
@@ -57,11 +57,11 @@ const PRIVACY = [
   },
 ];
 
-const TERMS = [
+export const TERMS = [
   {
     h: 'Using this site',
     p: [
-      'By using scalea.com you agree to these terms. The site is here to tell you about our work and services and to help you get in touch. Please do not misuse it, try to break it, or use it for anything unlawful.',
+      'By using this website you agree to these terms. The site is here to tell you about our work and services and to help you get in touch. Please do not misuse it, try to break it, or use it for anything unlawful.',
     ],
   },
   {
@@ -141,24 +141,22 @@ function LegalPage({ eyebrow, title, lede, sections }) {
   );
 }
 
+// Page headers, shared with the markdown version of each page.
+export const PRIVACY_HEAD = {
+  eyebrow: 'Privacy',
+  title: 'Privacy policy',
+  lede: 'Plain and short: we collect only what you send us, use it to work with you, and never sell it.',
+};
+export const TERMS_HEAD = {
+  eyebrow: 'Terms',
+  title: 'Terms of use',
+  lede: 'The ground rules for using this site. Project work is always covered by its own written agreement.',
+};
+
 export function Privacy() {
-  return (
-    <LegalPage
-      eyebrow="Privacy"
-      title="Privacy policy"
-      lede="Plain and short: we collect only what you send us, use it to work with you, and never sell it."
-      sections={PRIVACY}
-    />
-  );
+  return <LegalPage {...PRIVACY_HEAD} sections={PRIVACY} />;
 }
 
 export function Terms() {
-  return (
-    <LegalPage
-      eyebrow="Terms"
-      title="Terms of use"
-      lede="The ground rules for using this site. Project work is always covered by its own written agreement."
-      sections={TERMS}
-    />
-  );
+  return <LegalPage {...TERMS_HEAD} sections={TERMS} />;
 }

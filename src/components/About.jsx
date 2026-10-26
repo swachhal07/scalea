@@ -8,7 +8,7 @@ import { useScrollProgress } from '../scroll.js';
 // from design to growth. Values sit underneath with the same pointer-lit edges as the
 // service cards.
 
-const STATEMENT =
+export const STATEMENT =
   'We’re Scalea, a studio in Kathmandu that designs, builds, launches and grows digital products for brands in Nepal and around the world.';
 const WORDS = STATEMENT.split(' ');
 // Words that stay a touch brighter once lit.
@@ -17,7 +17,7 @@ const KEY = new Set(['Scalea,', 'Kathmandu', 'designs,', 'builds,', 'launches', 
 // From the statement entering the lower part of the screen to it passing a third of the way up.
 const LIGHT_RANGE = (top, height, vh) => [top - vh * 0.85, top + height - vh * 0.35];
 
-const NUMBERS = [
+export const NUMBERS = [
   { n: 8, suffix: '+', k: 'Brands served', d: 'Across automotive, agriculture, machinery and finance.' },
   { n: 7, suffix: '', k: 'Days to launch', d: 'From kickoff call to a live product.' },
   { n: 24, suffix: 'h', k: 'Reply time', d: 'A real person, the same working day.' },
@@ -25,7 +25,14 @@ const NUMBERS = [
 
 const STAGES = ['Design', 'Build', 'Launch', 'Grow'];
 
-const VALUES = [
+// Card copy, shared with the markdown version of the page.
+export const CARDS = {
+  studio: ['Based in Kathmandu.', 'Building worldwide.'],
+  team: 'Start to finish, under one roof.',
+  teamCopy: 'The people who design your product build it, launch it and grow it, so nothing gets lost between agencies.',
+};
+
+export const VALUES = [
   ['Speed without shortcuts', 'We move fast because we plan well, not because we skip testing.'],
   ['Honest numbers', 'Clear prices up front and real results every month. No vanity metrics.'],
   ['Built to grow', 'Clean code and solid foundations, so your product scales with your business.'],
@@ -81,7 +88,7 @@ function KathmanduCard() {
     <motion.article className="ab-card ab-ktm" variants={fade} custom={0} onMouseMove={track}>
       <div className="ab-ktm-text">
         <span className="ab-k">Studio</span>
-        <h3>Based in Kathmandu.<br />Building worldwide.</h3>
+        <h3>{CARDS.studio[0]}<br />{CARDS.studio[1]}</h3>
         <div className="ab-clock">
           <b>{time}</b>
           <span>Kathmandu time · NPT</span>
@@ -146,8 +153,8 @@ function JourneyCard() {
     <motion.article className="ab-card ab-path" variants={fade} custom={2} onMouseMove={track}>
       <div className="ab-path-text">
         <span className="ab-k">One team</span>
-        <h3>Start to finish, under one roof.</h3>
-        <p>The people who design your product build it, launch it and grow it, so nothing gets lost between agencies.</p>
+        <h3>{CARDS.team}</h3>
+        <p>{CARDS.teamCopy}</p>
       </div>
       <div className="ab-line" aria-hidden="true">
         <span className="ab-line-track"><i /></span>

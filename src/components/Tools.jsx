@@ -5,17 +5,21 @@ import { EASE } from '../lib.js';
 
 // Tools flow into the Scalea engine, which turns them into outcomes.
 // Positions are % of the stage so the SVG wiring lines up at every width.
-const TOOLS = [
+export const TOOLS = [
   { icon: siFigma, name: 'Figma', role: 'Design', y: 17 },
   { icon: siNextdotjs, name: 'Next.js', role: 'Build', y: 39 },
   { icon: siAnthropic, name: 'Claude', role: 'AI', y: 61 },
   { icon: siN8n, name: 'n8n', role: 'Automation', y: 83 },
 ];
-const OUTCOMES = [
+export const OUTCOMES = [
   { k: 'Build', d: 'Fast websites and apps that turn visitors into customers.', y: 22 },
   { k: 'Grow', d: 'SEO, ads and AI visibility that bring the right people in.', y: 50 },
   { k: 'Automate', d: 'Connected AI workflows that take the busywork off your team.', y: 78 },
 ];
+export const COPY = {
+  heading: 'The stack behind the results.',
+  intro: 'Best-in-class tools, wired together by one team, so your business gets outcomes, not just software.',
+};
 const IN_X = 27;
 const OUT_X = 73;
 const HUB = { l: 43, r: 57, y: 50 };
@@ -102,9 +106,9 @@ export default function Tools() {
     <section className={`tl ${inView ? '' : 'is-idle'}`} id="tools" ref={ref}>
       <motion.header className="tl-head" initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.5 }}>
         <motion.span className="tl-eyebrow" variants={reveal}><i />Tools we use</motion.span>
-        <motion.h2 variants={reveal} custom={1}>The stack behind the results.</motion.h2>
+        <motion.h2 variants={reveal} custom={1}>{COPY.heading}</motion.h2>
         <motion.p variants={reveal} custom={2}>
-          Best-in-class tools, wired together by one team, so your business gets outcomes, not just software.
+          {COPY.intro}
         </motion.p>
       </motion.header>
 

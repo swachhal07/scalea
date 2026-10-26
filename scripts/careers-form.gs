@@ -10,7 +10,7 @@
  * sheet with a link to the file, and NOTIFY gets an email about it.
  */
 
-const NOTIFY = 'hello@scalea.com';
+const NOTIFY = 'scalea@gmail.com';
 const FOLDER = 'Scalea CVs';
 const FIELDS = ['submittedAt', 'name', 'email', 'phone', 'role', 'link', 'note', 'cv'];
 

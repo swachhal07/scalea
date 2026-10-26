@@ -13,7 +13,15 @@ const VERBS = [
   { w: 'Grow', ms: 4500 },
 ];
 
-const PERKS = [
+export const COPY = {
+  title: 'Build what’s next with us.',
+  lede: 'We’re a small studio in Kathmandu building, launching and growing products for brands in Nepal and around the world. If you care about craft and like shipping, we’d love to hear from you.',
+  status: 'No open roles right now',
+  apply: 'Send us your CV anyway.',
+  applyCopy: 'We’re always glad to meet good designers, developers and marketers. Send your CV and we’ll reach out as soon as something fits.',
+};
+
+export const PERKS = [
   ['01', 'Real client work', 'Ship for brands people know, from day one.'],
   ['02', 'Small, senior team', 'Learn fast from people who do the work.'],
   ['03', 'Kathmandu and remote', 'Work from the studio or from home.'],
@@ -107,12 +115,11 @@ export default function Careers() {
       <motion.div className="lg-wrap" initial="hidden" animate="show">
         <header className="lg-head cr-head">
           <motion.span className="sp-eyebrow" variants={reveal}><i />Careers</motion.span>
-          <motion.h1 variants={reveal} custom={1} aria-label="Build what’s next with us.">
+          <motion.h1 variants={reveal} custom={1} aria-label={COPY.title}>
             <span aria-hidden="true"><CycleWord words={VERBS} /> what’s next with us.</span>
           </motion.h1>
           <motion.p className="lg-lede" variants={reveal} custom={2}>
-            We’re a small studio in Kathmandu building, launching and growing products for brands in Nepal and around the world.
-            If you care about craft and like shipping, we’d love to hear from you.
+            {COPY.lede}
           </motion.p>
         </header>
 
@@ -124,12 +131,9 @@ export default function Careers() {
 
         <motion.div className="cr-apply" variants={reveal} custom={4}>
           <div className="cr-note">
-            <span className="cr-status"><i />No open roles right now</span>
-            <h2>Send us your CV anyway.</h2>
-            <p>
-              We’re always glad to meet good designers, developers and marketers. Send your CV and we’ll
-              reach out as soon as something fits.
-            </p>
+            <span className="cr-status"><i />{COPY.status}</span>
+            <h2>{COPY.apply}</h2>
+            <p>{COPY.applyCopy}</p>
           </div>
 
           <div className="sp-card cr-card" id="apply">

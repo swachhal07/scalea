@@ -8,7 +8,7 @@ import { useMotionValue } from 'framer-motion';
 let lenis = null;
 const subscribers = new Set();
 const notify = () => subscribers.forEach((fn) => fn());
-window.addEventListener('scroll', () => { if (!lenis) notify(); }, { passive: true });
+if (!import.meta.env.SSR) window.addEventListener('scroll', () => { if (!lenis) notify(); }, { passive: true });
 
 export function setLenis(instance) {
   lenis = instance;
