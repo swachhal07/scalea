@@ -1,0 +1,56 @@
+/* Anti-Metal Button (see AntiMetalButton.jsx) */
+.am-btn {
+  --am-from: #1c1c1e;
+  --am-to: #0a0a0b;
+  --am-h: 54px;
+  --am-tab: 44px;
+  position: relative;
+  isolation: isolate;
+  display: inline-flex; align-items: center; justify-content: center;
+  height: var(--am-h);
+  padding: 0 26px;
+  overflow: hidden;
+  border: 0; border-radius: 12px;
+  background: linear-gradient(180deg, #ffffff 0%, #ededed 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 4px 12px rgba(0, 0, 0, 0.35);
+  color: #0a0a0a;
+  font: inherit; font-size: 16px; font-weight: 500; letter-spacing: -0.01em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+.am-btn--sm { --am-h: 42px; --am-tab: 36px; padding: 0 18px; border-radius: 11px; font-size: 14px; }
+.am-btn:active { transform: scale(0.98); }
+.am-btn:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.am-btn:disabled { opacity: 0.6; cursor: progress; }
+
+.am-label { position: relative; }
+
+/* The dark tab: hidden at rest, sweeps in from the left across the whole key on hover. */
+.am-tab {
+  position: absolute; top: 4px; bottom: 4px; left: 4px; z-index: 1;
+  display: flex; align-items: center; gap: 10px;
+  width: calc(100% - 8px);
+  clip-path: inset(0 100% 0 0 round 8px);
+  padding: 0 10px 0 calc((var(--am-tab) - 14px) / 2);
+  overflow: hidden;
+  border-radius: 8px;
+  background: linear-gradient(180deg, var(--am-from) 0%, var(--am-to) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 0 -2px 4px rgba(0, 0, 0, 0.4);
+  transition: clip-path 0.28s cubic-bezier(0.65, 0, 0.35, 1);
+}
+.am-btn:hover .am-tab, .am-btn:focus-visible .am-tab { clip-path: inset(0 0 0 0 round 8px); }
+.am-tab svg { flex-shrink: 0; overflow: visible; }
+
+@keyframes am-dot-wave {
+  0%, 70%, 100% { opacity: 0.25; transform: scale(0.85); }
+  35% { opacity: 1; transform: scale(1); }
+}
+/* The dots only pulse while the tab is showing: SVG animations repaint on the main thread,
+   so fifty idle dots per button running forever would cost every frame on every page. */
+.am-dot { transform-box: fill-box; transform-origin: center; opacity: 0.25; }
+.am-btn:hover .am-dot, .am-btn:focus-visible .am-dot { animation: am-dot-wave 1.4s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .am-dot { animation: none; opacity: 1; }
+  .am-tab { transition: none; }
+}

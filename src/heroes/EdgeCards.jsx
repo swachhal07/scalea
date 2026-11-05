@@ -54,20 +54,33 @@ export function UXCard() {
   return (
     <div className="ec ec-ux">
       <Tag icon="ux">UX Testing</Tag>
-      <div className="ec-heat"><i className="h a" /><i className="h b" /><i className="h c" /><span className="ec-cursor" /></div>
-      <div className="ec-stat"><small>Task success</small><div className="ec-bar"><i style={{ width: '92%' }} /></div><b>92%</b></div>
+      {/* What a research session actually yields: a tester's words, pinned to a moment in the recording */}
+      <blockquote className="ec-quote">
+        <p>“I expected the price on the first screen.”</p>
+        <footer><span className="ec-avatar">P4</span>Participant 4 <span>· 02:14</span></footer>
+      </blockquote>
+      <div className="ec-session">
+        <div className="ec-track">
+          <i className="ec-mark" style={{ left: '22%' }} />
+          <i className="ec-mark on" style={{ left: '48%' }} />
+          <i className="ec-mark" style={{ left: '81%' }} />
+          <i className="ec-played" style={{ '--v': 0.48 }} />
+        </div>
+        <small><span>00:00</span><span>04:30</span></small>
+      </div>
+      <div className="ec-stat"><small>Task success</small><div className="ec-bar"><i style={{ '--v': 0.92 }} /></div><b>92%</b></div>
     </div>
   );
 }
 
 function Gauge({ value, label }) {
   return (
-    <div className="ec-gauge" style={{ '--p': `${value * 0.75}%` }}>
+    <div className="ec-gauge">
       <svg viewBox="0 0 100 100" aria-hidden="true">
-        <circle cx="50" cy="50" r="40" pathLength="100" className="g-bg" />
-        <circle cx="50" cy="50" r="40" pathLength="100" className="g-fg" />
+        <circle cx="50" cy="50" r="42" pathLength="100" className="g-bg" />
+        <circle cx="50" cy="50" r="42" pathLength="100" className="g-fg" style={{ '--p': value * 0.75 }} />
       </svg>
-      <b>{value}%</b>
+      <b>{value}</b>
       <small>{label}</small>
     </div>
   );
@@ -76,11 +89,16 @@ function Gauge({ value, label }) {
 export function AuditCard() {
   return (
     <div className="ec ec-audit">
-      <Tag icon="audit">Performance & SEO Audit</Tag>
+      <header><Tag icon="audit">Performance & SEO Audit</Tag><span className="ec-chip">Passed</span></header>
       <div className="ec-gauges">
         <Gauge value={98} label="Performance" />
         <Gauge value={100} label="SEO" />
       </div>
+      <dl className="ec-vitals">
+        <div><dt>LCP</dt><dd>0.9s</dd></div>
+        <div><dt>INP</dt><dd>64ms</dd></div>
+        <div><dt>CLS</dt><dd>0.01</dd></div>
+      </dl>
     </div>
   );
 }

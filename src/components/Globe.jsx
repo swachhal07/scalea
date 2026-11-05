@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { canvasDpr } from '../lib.js';
 
 // A dotted globe centred near Kathmandu, turning slowly, with arcs reaching out to a few
 // cities and the current Kathmandu time beside the studio. Drawn on a 2D canvas: land dots are
@@ -65,7 +66,7 @@ export default function Globe() {
 
     function size() {
       const r = wrap.current.getBoundingClientRect();
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      dpr = canvasDpr();
       w = r.width; h = r.height;
       cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
       draw(performance.now());

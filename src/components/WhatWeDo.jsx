@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { motion, useTransform } from 'framer-motion';
 import { EASE } from '../lib.js';
 import { useScrollProgress } from '../scroll.js';
-import Bars from './Bars.jsx';
+import AntiMetalButton from './ui/AntiMetalButton.jsx';
 import { reveal } from '../whatwedo/data.jsx';
 import Bento from '../whatwedo/Bento.jsx';
 
@@ -51,7 +51,7 @@ export default function WhatWeDo() {
 
       <motion.div className="wwd-cta" variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.8 }}>
         <p>{COPY.cta}</p>
-        <a href="/start" className="p-cta"><Bars /><span className="p-cta-label">Start a Project</span></a>
+        <AntiMetalButton as="a" href="/start" className="p-cta">Start a Project</AntiMetalButton>
       </motion.div>
 
     </section>

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { EASE } from '../lib.js';
 import { getLenis } from '../scroll.js';
-import Bars from './Bars.jsx';
+import AntiMetalButton from './ui/AntiMetalButton.jsx';
 import DotField from '../howwework/DotField.jsx';
 import FlickeringGrid from './FlickeringGrid.jsx';
 import { SITE, SocialLinks, whatsappHref } from '../site.jsx';
@@ -83,7 +83,7 @@ export default function Closing() {
           <h2>{COPY.heading}</h2>
           <p>{COPY.intro}</p>
           <div className="cta-actions">
-            <a href="/start" className="p-cta"><Bars /><span className="p-cta-label">Start a Project</span></a>
+            <AntiMetalButton as="a" href="/start" className="p-cta">Start a Project</AntiMetalButton>
             <a href={whatsappHref()} className="cta-ghost" {...(SITE.whatsapp ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>Chat on WhatsApp <span aria-hidden="true">→</span></a>
           </div>
           <ul className="cta-points">

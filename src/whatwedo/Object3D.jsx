@@ -1,35 +1,36 @@
 import { useEffect, useRef } from 'react';
+import { LOW_END } from '../lib.js';
 
-// One glossy, monochrome 3D object per step, leaning toward the pointer. The scenes
-// live in scene3d.js and render in a worker where the browser allows it, so shader
-// compiles never block scrolling; this component only shows the frames and forwards
-// pointer and visibility changes.
+// One glossy, monochrome 3D object per step, leaning toward the pointer.
+//
+// Every device first gets a still picture of the object (pre-rendered into /public/process/),
+// so the card is complete the moment it scrolls in and costs nothing to show. Only desktops
+// with a mouse and enough cores and memory then load the live scene: it renders in a worker
+// (scene3d.js) so shader compiles never block scrolling, and it replaces the picture once its
+// first frame arrives. Browsers that cannot render WebGL off the main thread keep the picture.
+
+const still = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// Live 3D is a hover effect: only worth it with a mouse, and only on hardware that keeps it smooth.
+function canRunLive() {
+  if (still() || LOW_END) return false;
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return false;
+  return typeof OffscreenCanvas !== 'undefined' && 'transferToImageBitmap' in OffscreenCanvas.prototype;
+}
 
 let client = null;
 function getClient() {
-  client ||= (async () => {
-    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  client ||= new Promise((resolve) => {
     const views = new Map();
-
-    if (typeof OffscreenCanvas !== 'undefined' && 'transferToImageBitmap' in OffscreenCanvas.prototype) {
-      const worker = new Worker(new URL('./object3d.worker.js', import.meta.url), { type: 'module' });
-      const ok = await new Promise((resolve) => {
-        worker.onmessage = ({ data }) => {
-          if (data.type === 'frame') views.get(data.id)?.(data.bitmap);
-          else resolve(data.type === 'ready');
-        };
-        worker.onerror = () => resolve(false);
-        worker.postMessage({ type: 'init', still });
-      });
-      if (ok) return { worker: true, views, call: (type, ...args) => worker.postMessage({ type, args }) };
-      worker.terminate();
-    }
-
-    // No WebGL in workers: the same shared stage runs on the main thread instead.
-    const { createStage } = await import('./scene3d.js');
-    const stage = createStage({ still, present: (id, canvas) => views.get(id)?.(canvas) });
-    return { worker: false, views, call: (type, ...args) => stage[type](...args) };
-  })();
+    const worker = new Worker(new URL('./object3d.worker.js', import.meta.url), { type: 'module' });
+    worker.onmessage = ({ data }) => {
+      if (data.type === 'frame') views.get(data.id)?.(data.bitmap);
+      else if (data.type === 'ready') resolve({ views, call: (type, ...args) => worker.postMessage({ type, args }) });
+      else { worker.terminate(); resolve(null); }
+    };
+    worker.onerror = () => { worker.terminate(); resolve(null); };
+    worker.postMessage({ type: 'init', still: false });
+  });
   return client;
 }
 
@@ -40,37 +41,34 @@ export default function Object3D({ kind }) {
 
   useEffect(() => {
     const el = host.current;
+    if (!canRunLive()) return undefined;
     let disposed = false;
     let cleanup = () => {};
 
-    // Nothing loads until the object nears the viewport, and then only once the main thread is idle.
-    const idle = window.requestIdleCallback || ((fn) => setTimeout(fn, 1));
+    // The live scene loads once the card nears the viewport and the main thread is idle.
+    const idle = window.requestIdleCallback || ((fn) => setTimeout(fn, 200));
     const near = new IntersectionObserver(([entry]) => {
       if (!entry.isIntersecting) return;
       near.disconnect();
-      idle(init, { timeout: 600 });
-    }, { rootMargin: '400px' });
+      idle(init, { timeout: 2000 });
+    }, { rootMargin: '600px' });
     near.observe(el);
 
     async function init() {
       if (disposed) return;
       const c = await getClient();
-      if (disposed) return;
+      if (disposed || !c) return;
 
       const id = ++nextId;
       const canvas = document.createElement('canvas');
       el.appendChild(canvas);
       // Worker frames arrive as ImageBitmaps and are handed over without a copy.
-      if (c.worker) {
-        const ctx = canvas.getContext('bitmaprenderer');
-        c.views.set(id, (bitmap) => ctx.transferFromImageBitmap(bitmap));
-      } else {
-        const ctx = canvas.getContext('2d');
-        c.views.set(id, (source) => {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          ctx.drawImage(source, 0, 0);
-        });
-      }
+      // The first one swaps the picture for the live object.
+      const ctx = canvas.getContext('bitmaprenderer');
+      c.views.set(id, (bitmap) => {
+        ctx.transferFromImageBitmap(bitmap);
+        el.classList.add('is-live');
+      });
 
       const dpr = Math.min(window.devicePixelRatio, 1.25);
       const size = () => [Math.round(el.clientWidth * dpr), Math.round(el.clientHeight * dpr)];
@@ -117,6 +115,7 @@ export default function Object3D({ kind }) {
         c.call('remove', id);
         c.views.delete(id);
         canvas.remove();
+        el.classList.remove('is-live');
       };
     }
 
@@ -127,5 +126,9 @@ export default function Object3D({ kind }) {
     };
   }, [kind]);
 
-  return <div className="obj3d" ref={host} aria-hidden="true" />;
+  return (
+    <div className="obj3d" ref={host} aria-hidden="true">
+      <img className="obj3d-still" src={`/process/${kind}.webp`} alt="" width="720" height="552" loading="lazy" decoding="async" />
+    </div>
+  );
 }

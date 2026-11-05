@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { canvasDpr } from '../lib.js';
 
 // A grid of square "pixels" behind the section. Near the cursor they push away
 // and brighten, then spring back. Draws only while something is moving, and then
@@ -32,7 +33,7 @@ export default function DotField() {
     let dirty = null;
 
     const layout = () => {
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      dpr = canvasDpr();
       w = host.clientWidth;
       h = host.clientHeight;
       canvas.width = w * dpr;

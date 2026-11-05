@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { EASE, titleReveal } from '../lib.js';
-import Bars from '../components/Bars.jsx';
+import AntiMetalButton from '../components/ui/AntiMetalButton.jsx';
 import CycleWord from '../components/CycleWord.jsx';
 import { SITE } from '../site.jsx';
 import { Field, isEmail } from './Field.jsx';
@@ -188,9 +188,9 @@ export default function Careers() {
                 </Field>
 
                 <div className="sp-submit">
-                  <button type="submit" className="p-cta" disabled={state === 'sending'}>
-                    <Bars /><span className="p-cta-label">{state === 'sending' ? 'Sending…' : 'Send CV'}</span>
-                  </button>
+                  <AntiMetalButton type="submit" className="p-cta" disabled={state === 'sending'}>
+                    {state === 'sending' ? 'Sending…' : 'Send CV'}
+                  </AntiMetalButton>
                   <p>{state === 'failed' ? `That didn’t go through. Try again, or email ${SITE.email}.` : 'Your CV stays with our team only.'}</p>
                 </div>
               </form>

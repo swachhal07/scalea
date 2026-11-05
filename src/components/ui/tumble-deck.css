@@ -1,0 +1,27 @@
+/* Tumble Deck Showcase (see TumbleDeckShowcase.jsx) */
+.td-root {
+  position: relative; width: 100%; overflow: hidden;
+  outline: none; user-select: none; -webkit-user-select: none;
+  touch-action: none;
+}
+/* Page-scroll driven: leave touch scrolling to the page. */
+.td-root.td-page { touch-action: auto; }
+.td-root:focus-visible { box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.6); }
+.td-scene { position: absolute; inset: 0; transform-style: preserve-3d; }
+.td-card {
+  position: absolute; left: 50%; top: var(--td-top);
+  width: var(--td-w); height: var(--td-h); margin-left: calc(var(--td-w) / -2);
+  transform-origin: 50% 100%; transform-style: preserve-3d;
+  backface-visibility: visible; will-change: transform;
+  border-radius: 6px; overflow: hidden; cursor: pointer;
+  background: #121213;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+.td-card img {
+  display: block; width: 100%; height: 100%; max-width: none;
+  object-fit: cover; object-position: 50% 0%; pointer-events: none;
+}
+.td-card::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: #000; opacity: var(--td-shade, 0);
+}

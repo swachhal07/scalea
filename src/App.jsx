@@ -10,6 +10,7 @@ import Closing from './components/Closing.jsx';
 import HeroPrime from './heroes/HeroPrime.jsx';
 import { useRoute } from './router.jsx';
 import { jumpTo, setLenis } from './scroll.js';
+import { LOW_END } from './lib.js';
 import { NOT_FOUND, ORIGIN, PAGES as SEO } from './seo.js';
 import { SERVICES, servicePath } from './services.js';
 
@@ -56,6 +57,8 @@ function useSmoothScroll() {
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     if (wantsNativeScroll()) return;
+    // Smoothing the wheel in JS costs a frame budget weak machines don't have: native scroll there.
+    if (LOW_END) return;
     const lenis = new Lenis({ duration: 1.15, smoothWheel: true });
     setLenis(lenis);
     let raf = requestAnimationFrame(function loop(t) {

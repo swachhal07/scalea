@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { EASE } from '../lib.js';
-import Bars from '../components/Bars.jsx';
+import { EASE, LOW_END } from '../lib.js';
+import AntiMetalButton from '../components/ui/AntiMetalButton.jsx';
 import CycleWord from '../components/CycleWord.jsx';
 import { useHero } from './shared.jsx';
 import { useIntroDone } from '../intro.js';
@@ -91,7 +91,8 @@ export default function HeroPrime() {
   const rotY = useSpring(useTransform(px, [-1, 1], [-5, 5]), { stiffness: 60, damping: 20 });
   const rotX = useSpring(useTransform(py, [-1, 1], [4, -4]), { stiffness: 60, damping: 20 });
   const onMove = (e) => {
-    if (e.pointerType !== 'mouse') return;
+    // Weak hardware keeps the card field still: one less 3D layer re-composited per frame.
+    if (e.pointerType !== 'mouse' || LOW_END) return;
     const r = e.currentTarget.getBoundingClientRect();
     px.set(((e.clientX - r.left) / r.width) * 2 - 1);
     py.set(((e.clientY - r.top) / r.height) * 2 - 1);
@@ -100,7 +101,7 @@ export default function HeroPrime() {
   const copyOpacity = useTransform(progress, [0, 0.45], [1, 0]);
 
   return (
-    <section className={`hx hx-prime ${idle ? 'is-idle' : ''}`} id="top" ref={ref} onPointerMove={onMove}>
+    <section className={`hx hx-prime ${idle ? 'is-idle' : ''} ${go ? 'is-live' : ''}`} id="top" ref={ref} onPointerMove={onMove}>
       <div className="p-corner p-corner-l" aria-hidden="true" />
       <div className="p-corner p-corner-r" aria-hidden="true" />
       <div className="p-dust" aria-hidden="true" />
@@ -130,9 +131,9 @@ export default function HeroPrime() {
         <motion.p className="p-lede" {...rise(0.32, go)}>
           {HERO.lede}
         </motion.p>
-        <motion.a href="/start" className="p-cta" {...rise(0.44, go)}>
-          <Bars /><span className="sr-only">Start a project</span><span className="p-cta-label" aria-hidden="true">Start <CycleWord words={CYCLE} /></span>
-        </motion.a>
+        <AntiMetalButton as={motion.a} href="/start" className="p-cta" {...rise(0.44, go)}>
+          <span className="sr-only">Start a project</span><span aria-hidden="true">Start <CycleWord words={CYCLE} /></span>
+        </AntiMetalButton>
         <motion.a href="#services" className="p-note" {...rise(0.54, go)}>
           <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" /><path d="M8 7.2v3.6M8 5.2v.1" /></svg>
           Or explore our services

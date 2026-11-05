@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { EASE } from '../lib.js';
 import { lockScroll } from '../scroll.js';
-import Bars from './Bars.jsx';
+import AntiMetalButton from './ui/AntiMetalButton.jsx';
 import { SITE, SocialLinks } from '../site.jsx';
 import { useIntroDone } from '../intro.js';
 
@@ -76,10 +76,7 @@ export default function Nav() {
           </a>
         ))}
       </nav>
-      <a href="/start" className="nav-cta">
-        <span className="nav-cta-label">Start a Project</span>
-        <span className="nav-cta-arrow" aria-hidden="true"><span>→</span><span>→</span></span>
-      </a>
+      <AntiMetalButton as="a" href="/start" size="sm" className="nav-cta">Start a Project</AntiMetalButton>
       <button
         className={`nav-toggle ${open ? 'is-open' : ''}`}
         aria-label={open ? 'Close menu' : 'Open menu'}
@@ -115,9 +112,7 @@ export default function Nav() {
               ))}
             </nav>
             <motion.div className="nav-sheet-foot" variants={row}>
-              <a href="/start" className="p-cta" onClick={() => setOpen(false)}>
-                <Bars /><span className="p-cta-label">Start a Project</span>
-              </a>
+              <AntiMetalButton as="a" href="/start" className="p-cta" onClick={() => setOpen(false)}>Start a Project</AntiMetalButton>
               <div className="nav-sheet-contact">
                 <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
                 <ul><SocialLinks /></ul>

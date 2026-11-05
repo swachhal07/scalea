@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { EASE, titleReveal } from '../lib.js';
-import Bars from '../components/Bars.jsx';
+import AntiMetalButton from '../components/ui/AntiMetalButton.jsx';
 import { Field, Group, isEmail } from './Field.jsx';
 import { SITE, whatsappHref } from '../site.jsx';
 
@@ -205,7 +205,7 @@ export default function StartProject() {
               </Field>
 
               <div className="sp-submit">
-                <button type="submit" className="p-cta"><Bars /><span className="p-cta-label">Send project brief</span></button>
+                <AntiMetalButton type="submit" className="p-cta">Send project brief</AntiMetalButton>
                 <p>We reply within one working day. Your details stay with us.</p>
               </div>
             </form>

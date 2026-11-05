@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react';
+import { canvasDpr } from '../lib.js';
 
 // A grid of flickering squares. Cells that fall inside the rasterised word are
 // lifted above the noise floor, so the text reads as a dot-matrix sign.
@@ -33,7 +34,7 @@ export default function FlickeringGrid({
     const height = container.clientHeight;
     if (!width || !height) return;
 
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = canvasDpr();
     canvas.width = Math.floor(width * dpr);
     canvas.height = Math.floor(height * dpr);
     canvas.style.width = `${width}px`;

@@ -11,7 +11,8 @@ function build(T, RoundedBox, kind) {
   const white = new T.MeshPhysicalMaterial({ color: 0x1b1b1d, metalness: 0.35, roughness: 0.38, clearcoat: 0.8, clearcoatRoughness: 0.2 });
   const glow = new T.MeshBasicMaterial({ color: 0xffffff });
   const dim = new T.MeshBasicMaterial({ color: 0x6c6c70 });
-  const glass = new T.MeshPhysicalMaterial({ color: 0xbfc0c4, metalness: 0, roughness: 0.08, transmission: 0.9, thickness: 1.2, ior: 1.45, transparent: true, opacity: 0.6 });
+  // Plain see-through glass: real transmission would draw the whole scene a second time every frame.
+  const glass = new T.MeshStandardMaterial({ color: 0xbfc0c4, metalness: 0.1, roughness: 0.08, transparent: true, opacity: 0.45 });
   const g = new T.Group();
 
   if (kind === 'build') {

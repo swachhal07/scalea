@@ -1,14 +1,16 @@
 import { useEffect } from 'react';
-import { useMotionValue } from 'framer-motion';
+import { frame, useMotionValue } from 'framer-motion';
 
 // Scroll subscribers. With smooth scrolling on, they run from the page's Lenis
-// instance (App hands it over), whose scroll value comes for free each frame;
-// reading window.scrollY instead can make the browser flush pending style and
-// layout first. Without Lenis (reduced motion) they run from native scroll events.
+// instance (App hands it over), whose scroll value comes for free each frame.
+// Without Lenis (native scroll: reduced motion, weak hardware) they run once per frame
+// in framer's read step, where reading window.scrollY finds the layout already clean;
+// running them straight from each scroll event made the browser flush style and layout
+// early, then again for the writes that followed.
 let lenis = null;
 const subscribers = new Set();
 const notify = () => subscribers.forEach((fn) => fn());
-if (!import.meta.env.SSR) window.addEventListener('scroll', () => { if (!lenis) notify(); }, { passive: true });
+if (!import.meta.env.SSR) window.addEventListener('scroll', () => { if (!lenis) frame.read(notify); }, { passive: true });
 
 export function setLenis(instance) {
   lenis = instance;

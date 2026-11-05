@@ -75,21 +75,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   transition: color 0.4s var(--ease);
 }
 .nav-links a:hover { color: var(--text); }
-.nav-cta {
-  justify-self: end;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  height: 40px;
-  padding: 0 18px;
-  font-size: 14px;
-  font-weight: 500;
-  border-radius: 999px;
-  border: 1px solid var(--line-2);
-  background: rgba(255, 255, 255, 0.03);
-  transition: background 0.5s var(--ease), border-color 0.5s var(--ease);
-}
-.nav-cta:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.24); }
+.nav-cta { justify-self: end; }
 .arrow { display: inline-block; transition: transform 0.5s var(--ease); }
 a:hover .arrow { transform: translateX(4px); }
 .nav-toggle, .nav-sheet { display: none; }
@@ -166,3 +152,13 @@ a:hover .arrow { transform: translateX(4px); }
 html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }
 .lenis.lenis-stopped { overflow: hidden; }
+
+/* ---------- Low-end mode ----------
+   Set on <html> for weak hardware (LOW_END in lib.js). Keeps every section and its content,
+   drops only what costs frames: idle drifting, blurred far cards, live backdrop blurs. */
+.low-end .p-float { animation: none; }
+.low-end .p-float .ec { filter: none; }
+.low-end .p-cycle i { filter: none !important; }
+.low-end .wkp { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(0, 0, 0, 0.9); }
+.low-end .wk-card img, .low-end .wk-shot { transition-duration: 0.4s; }
+.low-end .sp-card { backdrop-filter: none; }

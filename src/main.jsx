@@ -2,6 +2,7 @@ import React, { startTransition } from 'react';
 import ReactDOM from 'react-dom/client';
 import { MotionConfig } from 'framer-motion';
 import App from './App.jsx';
+import { LOW_END } from './lib.js';
 import './styles.css';
 import './heroes/prime.css';
 import './components/whatwedo.css';
@@ -9,6 +10,7 @@ import './whatwedo/bento.css';
 import './whatwedo/anim.css';
 import './components/howwework.css';
 import './components/work.css';
+import './components/ui/anti-metal-button.css';
 import './components/about.css';
 import './components/closing.css';
 import './pages/start.css';
@@ -18,6 +20,9 @@ import './pages/services.css';
 // Where a page opens is the app's call (useScrollOnRoute in App.jsx), so the browser
 // doesn't restore an old scroll position on reload or back and forward.
 if ('scrollRestoration' in window.history) window.history.scrollRestoration = 'manual';
+
+// Weak hardware gets the lighter version of the page (see LOW_END in lib.js); CSS keys off this class.
+if (LOW_END) document.documentElement.classList.add('low-end');
 
 // The site renders at once, underneath the intro in index.html, as an interruptible
 // transition: the work is sliced into short tasks, so the intro's timers stay on time and

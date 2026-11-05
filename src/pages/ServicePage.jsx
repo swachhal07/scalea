@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { EASE, titleReveal } from '../lib.js';
-import Bars from '../components/Bars.jsx';
+import AntiMetalButton from '../components/ui/AntiMetalButton.jsx';
 import Closing, { COPY as CLOSING } from '../components/Closing.jsx';
 import { CASES } from '../components/Work.jsx';
 import { TOOLS } from '../components/Tools.jsx';
@@ -78,7 +78,7 @@ export default function ServicePage({ route }) {
             <motion.h1 variants={titleReveal} custom={1}>{s.h1}</motion.h1>
             <motion.p className="sv-lede" variants={reveal} custom={2}>{s.lede}</motion.p>
             <motion.div className="sv-actions" variants={reveal} custom={3}>
-              <a href="/start" className="p-cta"><Bars /><span className="p-cta-label">Start a Project</span></a>
+              <AntiMetalButton as="a" href="/start" className="p-cta">Start a Project</AntiMetalButton>
               <a href={whatsappHref()} className="cta-ghost" target="_blank" rel="noopener noreferrer">Chat on WhatsApp <span aria-hidden="true">→</span></a>
             </motion.div>
             <motion.ul className="sv-points" variants={reveal} custom={4}>
