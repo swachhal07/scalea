@@ -89,7 +89,7 @@ a:hover .arrow { transform: translateX(4px); }
 /* ---------- Mobile ---------- */
 @media (max-width: 639px) {
   .nav { height: 64px; }
-  .nav-cta { display: none; }
+  .nav .nav-cta { display: none; } /* beats .am-btn display, which loads later */
   .logo { font-size: 13px; }
   /* Toggle: a dark tile like the logo's; the two lines (one short) cross into an X */
   .nav-toggle {
